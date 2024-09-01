@@ -1,6 +1,8 @@
 class Enemy extends MovableObject {
-    y = 270;
-
+    y = 314;
+    height = 180;
+    width = 180;
+    otherDirection = true;
     IMAGES_WALKING = [
         'img/3_enemies/snake/1_walk/Walk1.png',
         'img/3_enemies/snake/1_walk/Walk2.png',
