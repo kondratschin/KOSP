@@ -1,6 +1,6 @@
 class MovableObject {
     x = 120;
-    y = 256;
+    y = 180;
     img;
     height = 250;
     width = 250;
@@ -8,6 +8,21 @@ class MovableObject {
     currentImage = 0;
     speed = 0.15;
     otherDirection = false;
+    speedY = 0;
+    acceleration = 2;
+
+    applyGravity() {
+        setInterval(() => {
+            if (this.isAboveGround() || this.speedY < 0) {
+                this.y += this.speedY;
+                this.speedY += this.acceleration;
+            }
+        }, 1000 / 25);
+    }
+
+    isAboveGround() {
+        return this.y < 256;
+    }
 
     loadImage(path) {
         this.img = new Image();
@@ -33,19 +48,19 @@ class MovableObject {
         this.img = this.imageCache[path];
         this.currentImage++;
     }
-    
+
     moveRight() {
-        console.log('move right');
+        this.x += this.speed;
+        this.otherDirection = false;
+
     }
 
     moveLeft() {
-        setInterval(() => {
-            this.x -= this.speed;
+                this.x -= this.speed;
+                this.otherDirection = true;
+    }
 
-            // Check if the image has moved completely off the screen
-            if (this.x + this.width < 0) {
-                this.x = 719; // Reset the position to the right side of the screen
-            }
-        }, 1000 / 60);
+    jump() {
+        this.speedY = -25;
     }
 }
