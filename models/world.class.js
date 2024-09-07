@@ -17,11 +17,56 @@ class World {
         this.setFixedBackground('img/5_background/layers/sky.png', 0, 0, 720, 405);
         this.draw();
         this.setWorld();
+        this.checkCollisions();
     }
 
     setWorld() {
         this.character.world = this;
     }
+
+
+    // checkCollisions() {
+
+    //     setInterval(() => {
+    //         this.level.enemies.forEach((enemy) => {
+    //             let characterFrame = this.character.getFrameCoordinates();
+    //             if (character.isColliding(enemy)) {
+    //                 console.log('Collision with Character');
+    //             }
+    //         });
+    //     }, 1000);
+    // }
+
+
+
+    checkCollisions() {
+        this.enemies.forEach(enemy => {
+            const characterFrame = this.character.getFrameCoordinates();
+            const enemyFrame = enemy.getFrameCoordinates();
+
+            if (characterFrame && enemyFrame) {
+                console.log('Character Frame:', characterFrame);
+                console.log('Enemy Frame:', enemyFrame);
+
+                if (this.isColliding(characterFrame, enemyFrame)) {
+                    console.log('Collision detected!');
+                    // Handle collision
+                }
+            }
+        });
+    }
+
+
+isColliding(frame1, frame2) {
+    return (
+        frame1.x < frame2.x + frame2.width &&
+        frame1.x + frame1.width > frame2.x &&
+        frame1.y < frame2.y + frame2.height &&
+        frame1.y + frame1.height > frame2.y
+    );
+}
+
+
 
     setFixedBackground(imagePath, x, y, width, height) {
         this.background = new BackgroundObject(imagePath, x, y, width, height);
@@ -57,13 +102,20 @@ class World {
 
     addToMap(mo) {
         if (mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.x + mo.width - 30, mo.y);
-            this.ctx.scale(-1, 1);
-            this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
-            this.ctx.restore();
+            this.flipImage(mo);
+            mo.drawFrame(this.ctx);
+
         } else {
-            this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+            mo.draw(this.ctx);
+            mo.drawFrame(this.ctx);
         }
+    }
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.x + mo.width - 35, mo.y);
+        this.ctx.scale(-1, 1);
+        this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
+        this.ctx.restore();
     }
 }
