@@ -40,13 +40,14 @@ class World {
 
 
     checkCollisions() {
+        setInterval(() => {
         this.enemies.forEach(enemy => {
             const characterFrame = this.character.getFrameCoordinates();
             const enemyFrame = enemy.getFrameCoordinates();
 
             if (characterFrame && enemyFrame) {
-                console.log('Character Frame:', characterFrame);
-                console.log('Enemy Frame:', enemyFrame);
+                // console.log('Character Frame:', characterFrame);
+                // console.log('Enemy Frame:', enemyFrame);
 
                 if (this.isColliding(characterFrame, enemyFrame)) {
                     console.log('Collision detected!');
@@ -54,6 +55,7 @@ class World {
                 }
             }
         });
+    }, 1000 / 60);
     }
 
 
