@@ -50,12 +50,13 @@ class World {
                 // console.log('Enemy Frame:', enemyFrame);
 
                 if (this.isColliding(characterFrame, enemyFrame)) {
-                    console.log('Collision detected!');
+                    this.character.hit();
+                    console.log('Collision detected!', this.character.energy);
                     // Handle collision
                 }
             }
         });
-    }, 1000 / 60);
+    }, 200);
     }
 
 

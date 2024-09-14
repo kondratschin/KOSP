@@ -1,19 +1,14 @@
-class MovableObject {
-    x = 120;
-    y = 180;
-    img;
-    height = 250;
-    width = 250;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject{
+
+
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
     acceleration = 2;
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
-
-
+    energy = 100;
+    lastHit = 0;
 
     applyGravity() {
         setInterval(() => {
@@ -28,88 +23,84 @@ class MovableObject {
         return this.y < 256;
     }
 
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-    }
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    }
 
 
 
 
-    getFrameCoordinates() {
-        if (this instanceof Character) {
-            return {
-                x: this.x + this.characterFrame[0],
-                y: this.y + this.characterFrame[1],
-                width: this.width + this.characterFrame[2],
-                height: this.height + this.characterFrame[3]
-            };
-        } else if (this instanceof Enemy) {
-            return {
-                x: this.x + this.snakeFrame[0],
-                y: this.y + this.snakeFrame[1],
-                width: this.width + this.snakeFrame[2],
-                height: this.height + this.snakeFrame[3]
-            };
+    hit() {
+        this.energy -= 5;
+        if (this.energy <= 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
         }
-        return null;
     }
 
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Enemy) {
-            ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = 'red';
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
+        timepassed = timepassed / 1000; // Difference in seconds
+        return timepassed < 0.5;
+    }
 
-            const frame = this.getFrameCoordinates();
-            if (frame) {
-                ctx.rect(frame.x, frame.y, frame.width, frame.height);
+
+    isDead() {
+            return this.energy === 0;
+        }
+
+        getFrameCoordinates() {
+            if (this instanceof Character) {
+                return {
+                    x: this.x + this.characterFrame[0],
+                    y: this.y + this.characterFrame[1],
+                    width: this.width + this.characterFrame[2],
+                    height: this.height + this.characterFrame[3]
+                };
+            } else if (this instanceof Enemy) {
+                return {
+                    x: this.x + this.snakeFrame[0],
+                    y: this.y + this.snakeFrame[1],
+                    width: this.width + this.snakeFrame[2],
+                    height: this.height + this.snakeFrame[3]
+                };
             }
+            return null;
+        }
 
-            ctx.stroke();
+        drawFrame(ctx) {
+            if (this instanceof Character || this instanceof Enemy) {
+                ctx.beginPath();
+                ctx.lineWidth = '5';
+                ctx.strokeStyle = 'red';
+
+                const frame = this.getFrameCoordinates();
+                if (frame) {
+                    ctx.rect(frame.x, frame.y, frame.width, frame.height);
+                }
+
+                ctx.stroke();
+            }
+        }
+
+
+        playAnimation(images) {
+            let i = this.currentImage % images.length;
+            let path = images[i];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        }
+
+        moveRight() {
+            this.x += this.speed;
+            this.otherDirection = false;
+
+        }
+
+        moveLeft() {
+            this.x -= this.speed;
+            this.otherDirection = true;
+        }
+
+        jump() {
+            this.speedY = -25;
         }
     }
-
-    
-
-    
-
-
-    /**
-     * 
-     * @param {Array} arr 
-     */
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-    }
-
-    playAnimation(images) {
-        let i = this.currentImage % this.IMAGES_WALKING.length;
-        let path = images[i];
-        this.img = this.imageCache[path];
-        this.currentImage++;
-    }
-
-    moveRight() {
-        this.x += this.speed;
-        this.otherDirection = false;
-
-    }
-
-    moveLeft() {
-                this.x -= this.speed;
-                this.otherDirection = true;
-    }
-
-    jump() {
-        this.speedY = -25;
-    }
-}
