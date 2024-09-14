@@ -28,4 +28,19 @@ class DrawableObject {
             });
         }
 
+        drawFrame(ctx) {
+            if (this instanceof Character || this instanceof Enemy) {
+                ctx.beginPath();
+                ctx.lineWidth = '5';
+                ctx.strokeStyle = 'red';
+    
+                const frame = this.getFrameCoordinates();
+                if (frame) {
+                    ctx.rect(frame.x, frame.y, frame.width, frame.height);
+                }
+    
+                ctx.stroke();
+            }
+        }
+
 }
