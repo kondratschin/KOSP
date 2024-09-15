@@ -9,7 +9,10 @@ class World {
     keyboard;
     camera_x = 0;
     background;
-    statusBar = new StatusBar();
+    statusBarLeftCorner = new StatusBar('leftCorner');
+    statusBarSetPercentage = new StatusBar('setPercentage');
+    statusBarRightCorner = new StatusBar('rightCorner');
+    gui = new GUI();
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -34,8 +37,8 @@ class World {
                 if (characterFrame && enemyFrame) {
                     if (this.isColliding(characterFrame, enemyFrame)) {
                         this.character.hit();
-                        console.log('Collision detected!', this.character.energy);
-                        // Handle collision
+                        let energy = Math.min(this.character.energy, 100);
+                        this.statusBarSetPercentage.setPercentage(energy);
                     }
                 }
             });
@@ -63,7 +66,21 @@ class World {
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.level.backgroundObjects);
-        this.addToMap(this.statusBar);
+
+        this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
+        // -------- space for fixed objects ----------------
+        this.addToMap(this.gui);
+        if (this.character.energy > 0) {
+            this.addToMap(this.statusBarLeftCorner);
+        }
+
+        if (this.character.energy === 100) {
+        this.addToMap(this.statusBarRightCorner);
+        }
+        this.addToMap(this.statusBarSetPercentage);
+        
+        this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
+        // -------- space for fixed objects ----------------
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
@@ -100,4 +117,9 @@ class World {
         this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
         this.ctx.restore();
     }
+
+    clearImage(x, y, width, height) {
+        this.ctx.clearRect(x, y, width, height);
+    }
+
 }
