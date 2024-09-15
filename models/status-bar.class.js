@@ -54,10 +54,6 @@ class StatusBar extends DrawableObject {
         this.height = 14;
     }
 
-    clear(ctx) {
-        ctx.clearRect(this.x, this.y, this.width, this.height);
-    }
-
 
     // resolveImageIndex() {
     //     if (this.percentage === 100) {

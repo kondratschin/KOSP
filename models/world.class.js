@@ -12,6 +12,12 @@ class World {
     statusBarLeftCorner = new StatusBar('leftCorner');
     statusBarSetPercentage = new StatusBar('setPercentage');
     statusBarRightCorner = new StatusBar('rightCorner');
+    magicBarLeftCorner = new MagicBar('leftCorner');
+    magicBarSetPercentage = new MagicBar('setPercentage');
+    magicBarRightCorner = new MagicBar('rightCorner');
+    goldBarLeftCorner = new GoldBar('leftCorner');
+    goldBarSetPercentage = new GoldBar('setPercentage');
+    goldBarRightCorner = new GoldBar('rightCorner');
     gui = new GUI();
 
     constructor(canvas, keyboard) {
@@ -78,7 +84,12 @@ class World {
         this.addToMap(this.statusBarRightCorner);
         }
         this.addToMap(this.statusBarSetPercentage);
-        
+        this.addToMap(this.magicBarLeftCorner);
+        this.addToMap(this.magicBarSetPercentage);
+        this.addToMap(this.magicBarRightCorner);
+        this.addToMap(this.goldBarLeftCorner);
+        this.addToMap(this.goldBarSetPercentage);
+        this.addToMap(this.goldBarRightCorner);
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
         // -------- space for fixed objects ----------------
         this.addObjectsToMap(this.level.clouds);
