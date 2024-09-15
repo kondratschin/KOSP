@@ -75,6 +75,8 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
         // -------- space for fixed objects ----------------
+
+        
         this.addToMap(this.gui);
         if (this.character.energy > 0) {
             this.addToMap(this.statusBarLeftCorner);
@@ -91,6 +93,8 @@ class World {
         this.addToMap(this.goldBarSetPercentage);
         this.addToMap(this.goldBarRightCorner);
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
+
+
         // -------- space for fixed objects ----------------
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
@@ -127,10 +131,6 @@ class World {
         this.ctx.scale(-1, 1);
         this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
         this.ctx.restore();
-    }
-
-    clearImage(x, y, width, height) {
-        this.ctx.clearRect(x, y, width, height);
     }
 
 }
