@@ -16,10 +16,9 @@ class StatusBar extends DrawableObject {
 
         if (initMethod === 'leftCorner') {
             this.leftCorner();
-            
-        } if (initMethod === 'rightCorner') {
+        } else if (initMethod === 'rightCorner') {
             this.rightCorner();
-        } if (initMethod === 'setPercentage') {
+        } else if (initMethod === 'setPercentage') {
             this.setPercentage(this.percentage);
         }
     }

@@ -1,9 +1,9 @@
 class MagicBar extends DrawableObject {
 
         IMAGES = [
-            'img/7_statusbars/2_interface/hp_corner1.png',
-            'img/7_statusbars/2_interface/hp_full.png',
-            'img/7_statusbars/2_interface/hp_corner2.png'
+            'img/7_statusbars/2_interface/magic_corner1.png',
+            'img/7_statusbars/2_interface/magic_full_bar.png',
+            'img/7_statusbars/2_interface/magic_corner2.png'
         ];
     
         percentage = 100;

@@ -18,7 +18,11 @@ class World {
     goldBarLeftCorner = new GoldBar('leftCorner');
     goldBarSetPercentage = new GoldBar('setPercentage');
     goldBarRightCorner = new GoldBar('rightCorner');
-    gui = new GUI();
+    guiFrame = new GUI('GUI');
+    characterGUI = new GUI('knightGUI');
+    goldGUI = new GUI('goldGUI');
+    magicGUI = new GUI('magicGUI');
+    flyingObjects = [new FlyingObject()];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -27,15 +31,28 @@ class World {
         this.setFixedBackground('img/5_background/layers/sky.png', 0, 0, 720, 405);
         this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
         this.character.world = this;
     }
 
-    checkCollisions() {
+    run() {
         setInterval(() => {
+            this.checkCollisions();
+            this.checkFlyingObjects();
+        }, 200);
+    }
+
+    checkFlyingObjects() {
+        if(this.keyboard.D) {
+            let fire = new FlyingObject(this.character.x + 22, this.character.y);
+            this.flyingObjects.push(fire);
+        }
+    }
+
+    checkCollisions() {
             this.enemies.forEach(enemy => {
                 const characterFrame = this.character.getFrameCoordinates();
                 const enemyFrame = enemy.getFrameCoordinates();
@@ -48,8 +65,8 @@ class World {
                     }
                 }
             });
-        }, 200);
-    }
+        }
+    
 
     isColliding(frame1, frame2) {
         return (
@@ -77,7 +94,10 @@ class World {
         // -------- space for fixed objects ----------------
 
         
-        this.addToMap(this.gui);
+        this.addToMap(this.guiFrame);
+        this.addToMap(this.characterGUI);
+        this.addToMap(this.goldGUI);
+        this.addToMap(this.magicGUI);
         if (this.character.energy > 0) {
             this.addToMap(this.statusBarLeftCorner);
         }
@@ -99,7 +119,7 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
-
+        this.addObjectsToMap(this.flyingObjects);
         this.ctx.translate(-this.camera_x, 0);
 
         // draw wird immer wieder aufgerufen
