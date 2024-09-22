@@ -23,6 +23,7 @@ class World {
     goldGUI = new GUI('goldGUI');
     magicGUI = new GUI('magicGUI');
     flyingObjects = [new FlyingObject()];
+    coins = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -32,6 +33,7 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        this.createCoins();
     }
 
     setWorld() {
@@ -50,6 +52,21 @@ class World {
             let fire = new FlyingObject(this.character.x + 22, this.character.y);
             this.flyingObjects.push(fire);
         }
+    }
+
+    createCoins() {
+        const coinPositions = [
+            { x: 305, y: 240 },
+            { x: 340, y: 220 },
+            { x: 380, y: 220 },
+            { x: 415, y: 240 },
+            { x: 1000, y: 250 }
+        ];
+
+        coinPositions.forEach(position => {
+            let coin = new Coins(position.x, position.y);
+            this.coins.push(coin);
+        });
     }
 
     checkCollisions() {
@@ -89,11 +106,11 @@ class World {
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.level.backgroundObjects);
-
+        this.addObjectsToMap(this.coins);
         this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
         // -------- space for fixed objects ----------------
 
-        
+
         this.addToMap(this.guiFrame);
         this.addToMap(this.characterGUI);
         this.addToMap(this.goldGUI);
@@ -110,6 +127,13 @@ class World {
         this.addToMap(this.magicBarSetPercentage);
         this.addToMap(this.magicBarRightCorner);
         this.addToMap(this.goldBarLeftCorner);
+        if (this.character.energy > 0) {
+            this.addToMap(this.statusBarLeftCorner);
+        }
+
+        if (this.character.energy === 100) {
+        this.addToMap(this.statusBarRightCorner);
+        }
         this.addToMap(this.goldBarSetPercentage);
         this.addToMap(this.goldBarRightCorner);
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards

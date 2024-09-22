@@ -6,7 +6,7 @@ class GoldBar extends DrawableObject {
         'img/7_statusbars/2_interface/energy_corner2.png'
     ];
 
-    percentage = 100;
+    percentage = 0;
 
     constructor(initMethod = 'leftCorner') {
         super();
