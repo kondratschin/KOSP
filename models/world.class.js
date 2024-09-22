@@ -24,6 +24,7 @@ class World {
     magicGUI = new GUI('magicGUI');
     flyingObjects = [new FlyingObject()];
     coins = [];
+    initialCoinsAmount = 0;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -34,6 +35,7 @@ class World {
         this.setWorld();
         this.run();
         this.createCoins();
+        this.initialCoinsAmount = this.coins.length;
     }
 
     setWorld() {
@@ -44,7 +46,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkFlyingObjects();
-        }, 200);
+        }, 100);
     }
 
     checkFlyingObjects() {
@@ -70,19 +72,34 @@ class World {
     }
 
     checkCollisions() {
-            this.enemies.forEach(enemy => {
-                const characterFrame = this.character.getFrameCoordinates();
-                const enemyFrame = enemy.getFrameCoordinates();
-
-                if (characterFrame && enemyFrame) {
-                    if (this.isColliding(characterFrame, enemyFrame)) {
-                        this.character.hit();
-                        let energy = Math.min(this.character.energy, 100);
-                        this.statusBarSetPercentage.setPercentage(energy);
-                    }
+        this.enemies.forEach(enemy => {
+            const characterFrame = this.character.getFrameCoordinates();
+            const enemyFrame = enemy.getFrameCoordinates();
+    
+            if (characterFrame && enemyFrame) {
+                if (this.isColliding(characterFrame, enemyFrame)) {
+                    this.character.hit();
+                    let energy = Math.min(this.character.energy, 100);
+                    this.statusBarSetPercentage.setPercentage(energy);
                 }
-            });
-        }
+            }
+        });
+    
+        this.coins.forEach(coin => {
+            const characterFrame = this.character.getFrameCoordinates();
+            const coinFrame = coin.getFrameCoordinates();
+    
+            if (characterFrame && coinFrame) {
+                if (this.isColliding(characterFrame, coinFrame)) {
+                    // Handle coin collection logic here
+                    // For example, remove the coin from the array and update the score
+                    this.coins = this.coins.filter(c => c !== coin);
+                    this.character.coins += 1; // Update the character's coins property
+                    this.goldBarSetPercentage.setPercentage(this.character.coins / this.initialCoinsAmount);
+                }
+            }
+        });
+    }
     
 
     isColliding(frame1, frame2) {
@@ -110,7 +127,6 @@ class World {
         this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
         // -------- space for fixed objects ----------------
 
-
         this.addToMap(this.guiFrame);
         this.addToMap(this.characterGUI);
         this.addToMap(this.goldGUI);
@@ -118,7 +134,6 @@ class World {
         if (this.character.energy > 0) {
             this.addToMap(this.statusBarLeftCorner);
         }
-
         if (this.character.energy === 100) {
         this.addToMap(this.statusBarRightCorner);
         }
@@ -126,16 +141,13 @@ class World {
         this.addToMap(this.magicBarLeftCorner);
         this.addToMap(this.magicBarSetPercentage);
         this.addToMap(this.magicBarRightCorner);
-        this.addToMap(this.goldBarLeftCorner);
-        if (this.character.energy > 0) {
-            this.addToMap(this.statusBarLeftCorner);
-        }
-
-        if (this.character.energy === 100) {
-        this.addToMap(this.statusBarRightCorner);
+        if (this.character.coins > 0) {
+            this.addToMap(this.goldBarLeftCorner);
         }
         this.addToMap(this.goldBarSetPercentage);
-        this.addToMap(this.goldBarRightCorner);
+        if (this.character.coins === this.initialCoinsAmount) {
+            this.addToMap(this.goldBarRightCorner);
+        }
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
 
 

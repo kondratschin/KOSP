@@ -44,7 +44,7 @@ class GoldBar extends DrawableObject {
 
         let path = this.IMAGES[1];
         this.img = this.imageCache[path];
-        this.width = 88 * (percentage / 100);
+        this.width = 88 * (percentage);
         this.x = 106;
         this.y = 67;
 

@@ -5,8 +5,10 @@ class MovableObject extends DrawableObject {
     acceleration = 2;
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
+    coinFrame = [5.5, 5.5, -10, -10];
     energy = 100;
     lastHit = 0;
+    coins = 0;
 
     applyGravity() {
         setInterval(() => {
@@ -54,6 +56,13 @@ class MovableObject extends DrawableObject {
                 y: this.y + this.snakeFrame[1],
                 width: this.width + this.snakeFrame[2],
                 height: this.height + this.snakeFrame[3]
+            };
+        } else if (this instanceof Coins) {
+            return {
+                x: this.x + this.coinFrame[0],
+                y: this.y + this.coinFrame[1],
+                width: this.width + this.coinFrame[2],
+                height: this.height + this.coinFrame[3]
             };
         }
         return null;

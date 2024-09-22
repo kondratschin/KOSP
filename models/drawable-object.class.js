@@ -29,7 +29,7 @@ class DrawableObject {
         }
 
         drawFrame(ctx) {
-            if (this instanceof Character || this instanceof Enemy) {
+            if (this instanceof Character || this instanceof Enemy || this instanceof Coins) {
                 ctx.beginPath();
                 ctx.lineWidth = '5';
                 ctx.strokeStyle = 'red';
