@@ -99,6 +99,20 @@ class World {
                 }
             }
         });
+    
+        this.flyingObjects.forEach(flyingObject => {
+            const flyingObjectFrame = flyingObject.getFrameCoordinates();
+    
+            this.enemies.forEach(enemy => {
+                const enemyFrame = enemy.getFrameCoordinates();
+    
+                if (flyingObjectFrame && enemyFrame) {
+                    if (this.isColliding(flyingObjectFrame, enemyFrame)) {
+                        console.log('hit');
+                    }
+                }
+            });
+        });
     }
     
 

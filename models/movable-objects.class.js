@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
     coinFrame = [5.5, 5.5, -10, -10];
+    flyingObjectFrame = [100, 135, -170, -200];
     energy = 100;
     lastHit = 0;
     coins = 0;
@@ -64,7 +65,17 @@ class MovableObject extends DrawableObject {
                 width: this.width + this.coinFrame[2],
                 height: this.height + this.coinFrame[3]
             };
+        } else if (this instanceof FlyingObject) {
+            return {
+                x: this.x + this.flyingObjectFrame[0],
+                y: this.y + this.flyingObjectFrame[1],
+                width: this.width + this.flyingObjectFrame[2],
+                height: this.height + this.flyingObjectFrame[3]
+            };
         }
+
+
+
         return null;
     }
 
