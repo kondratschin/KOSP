@@ -51,8 +51,13 @@ class World {
 
     checkFlyingObjects() {
         if(this.keyboard.D) {
-            let fire = new FlyingObject(this.character.x + 22, this.character.y);
-            this.flyingObjects.push(fire);
+            if (this.character.otherDirection === true) {
+                let fire = new FlyingObject(this.character.x - 22, this.character.y, 'back');
+                this.flyingObjects.push(fire);
+            } else {
+                let fire = new FlyingObject(this.character.x + 22, this.character.y, 'front');
+                this.flyingObjects.push(fire);
+            }
         }
     }
 
