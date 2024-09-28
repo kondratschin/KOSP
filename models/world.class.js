@@ -82,7 +82,7 @@ class World {
             const enemyFrame = enemy.getFrameCoordinates();
     
             if (characterFrame && enemyFrame) {
-                if (this.isColliding(characterFrame, enemyFrame)) {
+                if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt()) {
                     this.character.hit();
                     let energy = Math.min(this.character.energy, 100);
                     this.statusBarSetPercentage.setPercentage(energy);
@@ -96,10 +96,8 @@ class World {
     
             if (characterFrame && coinFrame) {
                 if (this.isColliding(characterFrame, coinFrame)) {
-                    // Handle coin collection logic here
-                    // For example, remove the coin from the array and update the score
                     this.coins = this.coins.filter(c => c !== coin);
-                    this.character.coins += 1; // Update the character's coins property
+                    this.character.coins += 1; // Increase the coins by 1
                     this.goldBarSetPercentage.setPercentage(this.character.coins / this.initialCoinsAmount);
                 }
             }
@@ -113,7 +111,9 @@ class World {
     
                 if (flyingObjectFrame && enemyFrame) {
                     if (this.isColliding(flyingObjectFrame, enemyFrame)) {
-                        console.log('hit');
+                        enemy.hit();
+                        enemy.energy = Math.min(enemy.energy, 0);
+                        console.log(`Enemy energy: ${enemy.energy}`);
                     }
                 }
             });

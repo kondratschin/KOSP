@@ -10,6 +10,7 @@ class MovableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
     coins = 0;
+    isStaying = false;
 
     applyGravity() {
         setInterval(() => {
@@ -74,12 +75,16 @@ class MovableObject extends DrawableObject {
             };
         }
 
-
-
         return null;
     }
 
+    isStaying() {
+        if (!this.Character.playAnimation()) {
+            this.isStaying = true;
+            console.log('isStaying');
+        }
 
+    }
 
     playAnimation(images) {
         let i = this.currentImage % images.length;
@@ -87,6 +92,24 @@ class MovableObject extends DrawableObject {
         this.img = this.imageCache[path];
         this.currentImage++;
     }
+
+    playJumpAnimation(images) {
+        let i = 0;
+        const displayNextImage = () => {
+            if (i < images.length) {
+                let path = images[i];
+                this.img = this.imageCache[path];
+                i++;
+                setTimeout(displayNextImage, 100); // Adjust the duration as needed
+            }
+        };
+        displayNextImage();
+    }
+
+
+
+
+
 
     moveRight() {
         this.x += this.speed;

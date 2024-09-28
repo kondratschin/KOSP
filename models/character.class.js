@@ -1,6 +1,23 @@
 class Character extends MovableObject {
     y = 124;
     speed = 5;
+
+    IMAGES_IDLE = [
+        'img/2_character_knight/1_idle/idle/idle1.png',
+        'img/2_character_knight/1_idle/idle/idle2.png',
+        'img/2_character_knight/1_idle/idle/idle3.png',
+        'img/2_character_knight/1_idle/idle/idle4.png',
+        'img/2_character_knight/1_idle/idle/idle5.png',
+        'img/2_character_knight/1_idle/idle/idle6.png',
+        'img/2_character_knight/1_idle/idle/idle7.png',
+        'img/2_character_knight/1_idle/idle/idle8.png',
+        'img/2_character_knight/1_idle/idle/idle9.png',
+        'img/2_character_knight/1_idle/idle/idle10.png',
+        'img/2_character_knight/1_idle/idle/idle11.png',
+        'img/2_character_knight/1_idle/idle/idle12.png'
+    ];
+
+    
     IMAGES_WALKING = [
         'img/2_character_knight/2_walk/walk1.png',
         'img/2_character_knight/2_walk/walk2.png',
@@ -40,12 +57,20 @@ class Character extends MovableObject {
         'img/2_character_knight/8_hurt/hurt4.png'
     ];
 
+    IMAGES_STANDING = [
+        'img/2_character_knight/2_walk/walk1.png'
+    ];
+
+
+
     world;
     walking_sound = new Audio('audio/walking.mp3');
 
 
     constructor() {
+
         super().loadImage("img/2_character_knight/2_walk/walk1.png");
+        this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -75,6 +100,7 @@ class Character extends MovableObject {
 
             if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) { 
                 this.jump();
+                this.playJumpAnimation(this.IMAGES_JUMPING);
             }
 
             this.world.camera_x = -this.x + 50;
@@ -86,11 +112,11 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if(this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING);
+            } else if (!this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_STANDING);
             } else {
 
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
 
                     // walk animation
                     this.playAnimation(this.IMAGES_WALKING);
