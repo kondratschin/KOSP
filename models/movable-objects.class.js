@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
     acceleration = 2;
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
+    orcFrame = [+45, +70, -120, -140];
     coinFrame = [5.5, 5.5, -10, -10]; //mana uses the same coordinate system as coins
     flyingObjectFrame = [100, 135, -170, -200];
     energy = 100;
@@ -53,12 +54,19 @@ class MovableObject extends DrawableObject {
                 width: this.width + this.characterFrame[2],
                 height: this.height + this.characterFrame[3]
             };
-        } else if (this instanceof Enemy) {
+        } else if (this instanceof Snake) {
             return {
                 x: this.x + this.snakeFrame[0],
                 y: this.y + this.snakeFrame[1],
                 width: this.width + this.snakeFrame[2],
                 height: this.height + this.snakeFrame[3]
+            };
+        } else if (this instanceof Orc) {
+            return {
+                x: this.x + this.orcFrame[0],
+                y: this.y + this.orcFrame[1],
+                width: this.width + this.orcFrame[2],
+                height: this.height + this.orcFrame[3]
             };
         } else if (this instanceof Coins) {
             return {

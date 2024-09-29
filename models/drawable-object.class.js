@@ -29,16 +29,20 @@ class DrawableObject {
         }
 
         drawFrame(ctx) {
-            if ((this instanceof Character || this instanceof Enemy || this instanceof Coins || this instanceof Mana || this instanceof FlyingObject) && !(this instanceof Enemy && this.isDead())) {
+            const shouldDrawFrame = this instanceof Character || this instanceof Orc || this instanceof Snake || this instanceof Coins || this instanceof Mana || this instanceof FlyingObject;
+            const SnakeAlive = !(this instanceof Snake && this.isDead());
+            const OrcAlive = !(this instanceof Orc && this.isDead());
+
+            if (shouldDrawFrame && SnakeAlive && OrcAlive) {
                 ctx.beginPath();
                 ctx.lineWidth = '5';
                 ctx.strokeStyle = 'red';
-    
+
                 const frame = this.getFrameCoordinates();
                 if (frame) {
                     ctx.rect(frame.x, frame.y, frame.width, frame.height);
                 }
-    
+
                 ctx.stroke();
             }
         }

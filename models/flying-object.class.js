@@ -1,5 +1,6 @@
 class FlyingObject extends MovableObject {
     otherDirection = false;
+    fireSound = new Audio('audio/fire.mp3');
     constructor(x, y, direction) {
         super().loadImage('img/6_fire_attack/fire_attack/fire1.png');
         // this.x = 100;
@@ -11,6 +12,7 @@ class FlyingObject extends MovableObject {
 
 
     fire(x, y, direction) {
+        this.fireSound.play();
         if (direction === "front") {
             this.x = x;
             this.y = y;

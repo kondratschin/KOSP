@@ -65,6 +65,8 @@ class Character extends MovableObject {
 
     world;
     walking_sound = new Audio('audio/walking.mp3');
+    jumping_sound = new Audio('audio/jumping.mp3');
+    
 
 
     constructor() {
@@ -75,10 +77,39 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_STANDING);
+        this.setInteractionTimer();
         this.applyGravity();
         this.animate();
     }
 
+
+    setInteractionTimer() {
+        const interactionEvents = ['click', 'keydown', 'mousemove', 'touchstart'];
+
+        const interactionHandler = () => {
+            this.lastInteractionTime = Date.now();
+        };
+
+        interactionEvents.forEach(event => {
+            window.addEventListener(event, interactionHandler);
+        });
+
+        setInterval(() => {
+            const currentTime = Date.now();
+            if (currentTime - this.lastInteractionTime >= 3000) {
+                this.playIdleAnimation();
+            }
+        }, 1300);
+    }
+
+    
+
+    playIdleAnimation() {
+            this.playAnimationOnce(this.IMAGES_IDLE);
+        }
+
+    
     animate() {
 
         setInterval(() => {
@@ -100,6 +131,7 @@ class Character extends MovableObject {
 
             if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) { 
                 this.jump();
+                this.jumping_sound.play();
                 this.playAnimationOnce(this.IMAGES_JUMPING);
             }
 
@@ -116,8 +148,8 @@ class Character extends MovableObject {
                 if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
                     // walk animation
                     this.playAnimation(this.IMAGES_WALKING);
-                } else if (!this.isAboveGround()) {
-                    this.playAnimation(this.IMAGES_STANDING);
+                } else if (!this.isAboveGround() && Date.now() - this.lastInteractionTime < 3000) {
+                    this.playAnimationOnce(this.IMAGES_STANDING);
                 }
             }
         }, 50);

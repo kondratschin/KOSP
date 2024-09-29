@@ -1,10 +1,12 @@
-class Enemy extends MovableObject {
+class Snake extends MovableObject {
     y = 314;
     height = 180;
     width = 180;
     otherDirection = true;
     animationInterval = null;
     movementInterval = null;
+    snakeDead = new Audio('audio/snake_dead.mp3');
+    snakeHit = new Audio('audio/enemy_hit.mp3');
 
     IMAGES_WALKING = [
         'img/3_enemies/snake/1_walk/Walk1.png',
@@ -46,10 +48,12 @@ class Enemy extends MovableObject {
 
     moveEnemy() {
         if (this.isDead()) {
+            this.snakeDead.play();
             this.playAnimationOnce(this.IMAGES_DEAD);
             this.speed = 0;
             this.stopAllIntervals();
         } else if (this.isHurt()) {
+            this.snakeHit.play();
             this.playAnimationOnce(this.IMAGES_HURT);
         } else {
             this.playAnimation(this.IMAGES_WALKING);
