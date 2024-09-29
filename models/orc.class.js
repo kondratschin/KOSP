@@ -56,9 +56,16 @@ class Orc extends MovableObject {
             this.playAnimationOnce(this.IMAGES_DEAD);
             this.speed = 0;
             this.stopAllIntervals();
+            setTimeout(() => {
+                this.removeCorpse = true;
+            }, 1500);
         } else if (this.isHurt()) {
             this.snakeHit.play();
             this.playAnimationOnce(this.IMAGES_HURT);
+            this.speed = 0;
+            setTimeout(() => {
+                this.speed = 0.3 + Math.random() * 0.5;
+            }, 500);
         } else {
             this.playAnimation(this.IMAGES_WALKING);
         }

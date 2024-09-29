@@ -1,6 +1,7 @@
 class Character extends MovableObject {
     y = 124;
     speed = 5;
+    speedY = 0;
 
     IMAGES_IDLE = [
         'img/2_character_knight/1_idle/idle/idle1.png',

@@ -115,12 +115,13 @@ class World {
             const characterFrame = this.character.getFrameCoordinates();
             const enemyFrame = enemy.getFrameCoordinates();
     
-            if (characterFrame && enemyFrame) {
-                if (this.jumpAttack(characterFrame, enemyFrame) && !this.character.isHurt()) {
+            if ((characterFrame && enemyFrame) && this.character.speedY > 0 && !(enemy instanceof Endboss)) {    
+                if (this.jumpAttack(characterFrame, enemyFrame)) {
                     enemy.hit();
                     enemy.energy = Math.min(enemy.energy, 0);
                 }
             }
+
 
             if (characterFrame && enemyFrame) {
                 if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
@@ -177,6 +178,7 @@ class World {
     }
     
 
+    
     isColliding(frame1, frame2) {
         return (
             frame1.x < frame2.x + frame2.width &&
@@ -186,12 +188,12 @@ class World {
         );
     }
 
-    jumpAttack(frame1, frame2) {
+    jumpAttack(characterFrame, enemyFrame) {
         return (
-            frame1.y + frame1.height > frame2.y &&
-            frame1.y + frame1.height < frame2.y + frame2.height &&
-            frame1.x < frame2.x + frame2.width &&
-            frame1.x + frame1.width > frame2.x
+            characterFrame.y + characterFrame.height > enemyFrame.y &&
+            characterFrame.y + characterFrame.height < enemyFrame.y + enemyFrame.height &&
+            characterFrame.x < enemyFrame.x + enemyFrame.width &&
+            characterFrame.x + characterFrame.width > enemyFrame.x
         );
     }
 
@@ -254,7 +256,7 @@ class World {
         // -------- space for fixed objects ----------------
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
-        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.enemies.filter(enemy => !enemy.removeCorpse));
         this.addObjectsToMap(this.flyingObjects);
         this.ctx.translate(-this.camera_x, 0);
 

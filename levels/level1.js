@@ -10,6 +10,9 @@ const level1 = new Level(
     [
         new Cloud(0, -100),
         new Cloud(720, -100), // Second cloud at a different position
+        new Cloud(1440, -100), // Second cloud at a different position
+        new Cloud(2160, -100), // Second cloud at a different position
+        new Cloud(2880, -100), // Second cloud at a different position
     ],
 
     [

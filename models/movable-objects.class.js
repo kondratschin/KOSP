@@ -6,7 +6,7 @@ class MovableObject extends DrawableObject {
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
     orcFrame = [+45, +70, -120, -120];
-    endBossFrame = [+99, +95, -200, -155];
+    endBossFrame = [+149, +120, -280, -195];
     coinFrame = [5.5, 5.5, -10, -10]; //mana uses the same coordinate system as coins
     flyingObjectFrame = [100, 135, -170, -200];
     energy = 100;

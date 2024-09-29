@@ -19,7 +19,7 @@ class Cloud extends MovableObject {
 
             // Check if the image has moved completely off the screen
             if (this.x + this.width < 0) {
-                this.x = 719; // Reset the position to the right side of the screen
+                this.x = 2880; // Reset the position to the right side of the screen
             }
         }, 1000 / 60);
     }
