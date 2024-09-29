@@ -5,7 +5,8 @@ class MovableObject extends DrawableObject {
     acceleration = 2;
     characterFrame = [+90, +110, -215, -190];
     snakeFrame = [+45, +70, -120, -140];
-    orcFrame = [+45, +70, -120, -140];
+    orcFrame = [+45, +70, -120, -120];
+    endBossFrame = [+99, +95, -200, -155];
     coinFrame = [5.5, 5.5, -10, -10]; //mana uses the same coordinate system as coins
     flyingObjectFrame = [100, 135, -170, -200];
     energy = 100;
@@ -47,50 +48,25 @@ class MovableObject extends DrawableObject {
     }
 
     getFrameCoordinates() {
-        if (this instanceof Character) {
+        const frameMap = {
+            Character: this.characterFrame,
+            Snake: this.snakeFrame,
+            Orc: this.orcFrame,
+            Coins: this.coinFrame,
+            FlyingObject: this.flyingObjectFrame,
+            Mana: this.coinFrame, // Mana uses the same frame as Coins
+            Endboss: this.endBossFrame
+        };
+
+        const frame = frameMap[this.constructor.name];
+        if (frame) {
             return {
-                x: this.x + this.characterFrame[0],
-                y: this.y + this.characterFrame[1],
-                width: this.width + this.characterFrame[2],
-                height: this.height + this.characterFrame[3]
-            };
-        } else if (this instanceof Snake) {
-            return {
-                x: this.x + this.snakeFrame[0],
-                y: this.y + this.snakeFrame[1],
-                width: this.width + this.snakeFrame[2],
-                height: this.height + this.snakeFrame[3]
-            };
-        } else if (this instanceof Orc) {
-            return {
-                x: this.x + this.orcFrame[0],
-                y: this.y + this.orcFrame[1],
-                width: this.width + this.orcFrame[2],
-                height: this.height + this.orcFrame[3]
-            };
-        } else if (this instanceof Coins) {
-            return {
-                x: this.x + this.coinFrame[0],
-                y: this.y + this.coinFrame[1],
-                width: this.width + this.coinFrame[2],
-                height: this.height + this.coinFrame[3]
-            };
-        } else if (this instanceof FlyingObject) {
-            return {
-                x: this.x + this.flyingObjectFrame[0],
-                y: this.y + this.flyingObjectFrame[1],
-                width: this.width + this.flyingObjectFrame[2],
-                height: this.height + this.flyingObjectFrame[3]
-            };
-        } else if (this instanceof Mana) {
-            return {
-                x: this.x + this.coinFrame[0],
-                y: this.y + this.coinFrame[1],
-                width: this.width + this.coinFrame[2],
-                height: this.height + this.coinFrame[3]
+                x: this.x + frame[0],
+                y: this.y + frame[1],
+                width: this.width + frame[2],
+                height: this.height + frame[3]
             };
         }
-
 
         return null;
     }

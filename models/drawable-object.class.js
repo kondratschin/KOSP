@@ -29,7 +29,7 @@ class DrawableObject {
         }
 
         drawFrame(ctx) {
-            const shouldDrawFrame = this instanceof Character || this instanceof Orc || this instanceof Snake || this instanceof Coins || this instanceof Mana || this instanceof FlyingObject;
+            const shouldDrawFrame = this instanceof Character || this instanceof Endboss || this instanceof Orc || this instanceof Snake || this instanceof Coins || this instanceof Mana || this instanceof FlyingObject;
             const SnakeAlive = !(this instanceof Snake && this.isDead());
             const OrcAlive = !(this instanceof Orc && this.isDead());
 
