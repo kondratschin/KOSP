@@ -25,6 +25,9 @@ class World {
     flyingObjects = [new FlyingObject()];
     coins = [];
     initialCoinsAmount = 0;
+    manaBottles = [];
+    magicBarFullAmount = 10;
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -36,6 +39,7 @@ class World {
         this.shootInterval();
         this.run();
         this.createCoins();
+        this.createMana();
         this.initialCoinsAmount = this.coins.length;
     }
 
@@ -57,7 +61,9 @@ class World {
     }
 
     checkFlyingObjects() {
-        if(this.keyboard.D) {
+        if(this.keyboard.D && this.character.collectedBottles > 0) {
+            this.character.collectedBottles -= 1;
+            this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
             if (this.character.otherDirection === true) {
                 let fire = new FlyingObject(this.character.x - 22, this.character.y, 'back');
                 this.flyingObjects.push(fire);
@@ -80,6 +86,22 @@ class World {
         coinPositions.forEach(position => {
             let coin = new Coins(position.x, position.y);
             this.coins.push(coin);
+        });
+    }
+
+
+    createMana() {
+        const manaPositions = [
+            { x: 205, y: 340 },
+            { x: 340, y: 220 },
+            { x: 380, y: 220 },
+            { x: 415, y: 240 },
+            { x: 900, y: 250 }
+        ];
+
+        manaPositions.forEach(position => {
+            let mana = new Mana(position.x, position.y);
+            this.manaBottles.push(mana);
         });
     }
 
@@ -111,8 +133,21 @@ class World {
             if (characterFrame && coinFrame) {
                 if (this.isColliding(characterFrame, coinFrame)) {
                     this.coins = this.coins.filter(c => c !== coin);
-                    this.character.coins += 1; // Increase the coins by 1
-                    this.goldBarSetPercentage.setPercentage(this.character.coins / this.initialCoinsAmount);
+                    this.character.collectedCoins += 1; // Increase the coins by 1
+                    this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
+                }
+            }
+        });
+
+        this.manaBottles.forEach(mana => {
+            const characterFrame = this.character.getFrameCoordinates();
+            const manaFrame = mana.getFrameCoordinates();
+    
+            if (characterFrame && manaFrame) {
+                if (this.isColliding(characterFrame, manaFrame)) {
+                    this.manaBottles = this.manaBottles.filter(m => m !== mana);
+                    this.character.collectedBottles += 1; // Increase the magic by 1
+                    this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
                 }
             }
         });
@@ -166,6 +201,7 @@ class World {
 
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.coins);
+        this.addObjectsToMap(this.manaBottles);
         this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
         // -------- space for fixed objects ----------------
 
@@ -180,17 +216,32 @@ class World {
         this.addToMap(this.statusBarRightCorner);
         }
         this.addToMap(this.statusBarSetPercentage);
-        this.addToMap(this.magicBarLeftCorner);
+
+
+
+        if (this.character.collectedBottles > 0) {            
+            this.addToMap(this.magicBarLeftCorner);
+        };
+        if (this.character.collectedBottles >= this.magicBarFullAmount) {
+            this.addToMap(this.magicBarRightCorner);
+        }
         this.addToMap(this.magicBarSetPercentage);
-        this.addToMap(this.magicBarRightCorner);
-        if (this.character.coins > 0) {
+
+
+
+
+        if (this.character.collectedCoins > 0) {
             this.addToMap(this.goldBarLeftCorner);
         }
         this.addToMap(this.goldBarSetPercentage);
-        if (this.character.coins === this.initialCoinsAmount) {
+        if (this.character.collectedCoins === this.initialCoinsAmount) {
             this.addToMap(this.goldBarRightCorner);
         }
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
+
+
+
+
 
 
         // -------- space for fixed objects ----------------

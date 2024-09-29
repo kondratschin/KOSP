@@ -6,7 +6,7 @@ class MagicBar extends DrawableObject {
             'img/7_statusbars/2_interface/magic_corner2.png'
         ];
     
-        percentage = 100;
+        percentage = 0;
     
         constructor(initMethod = 'leftCorner') {
             super();
@@ -44,7 +44,7 @@ class MagicBar extends DrawableObject {
     
             let path = this.IMAGES[1];
             this.img = this.imageCache[path];
-            this.width = 88 * (percentage / 100);
+            this.width = 88 * (percentage);
             this.x = 106;
             this.y = 50;
     

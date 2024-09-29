@@ -50,7 +50,7 @@ class Enemy extends MovableObject {
             this.speed = 0;
             this.stopAllIntervals();
         } else if (this.isHurt()) {
-            this.playAnimation(this.IMAGES_HURT);
+            this.playAnimationOnce(this.IMAGES_HURT);
         } else {
             this.playAnimation(this.IMAGES_WALKING);
         }
