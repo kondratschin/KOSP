@@ -78,13 +78,6 @@ class MovableObject extends DrawableObject {
         return null;
     }
 
-    isStaying() {
-        if (!this.Character.playAnimation()) {
-            this.isStaying = true;
-            console.log('isStaying');
-        }
-
-    }
 
     playAnimation(images) {
         let i = this.currentImage % images.length;
@@ -93,7 +86,7 @@ class MovableObject extends DrawableObject {
         this.currentImage++;
     }
 
-    playJumpAnimation(images) {
+    playAnimationOnce(images) {
         let i = 0;
         const displayNextImage = () => {
             if (i < images.length) {

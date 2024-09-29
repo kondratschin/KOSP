@@ -3,6 +3,9 @@ class Enemy extends MovableObject {
     height = 180;
     width = 180;
     otherDirection = true;
+    animationInterval = null;
+    movementInterval = null;
+
     IMAGES_WALKING = [
         'img/3_enemies/snake/1_walk/Walk1.png',
         'img/3_enemies/snake/1_walk/Walk2.png',
@@ -31,22 +34,44 @@ class Enemy extends MovableObject {
         this.animate();
     }
 
-
     animate() {
-        setInterval(() => {
+        this.movementInterval = setInterval(() => {
             this.moveLeft();
         }, 1000 / 60);
 
-        setInterval(() => {
-            if(this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else if(this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-            } 
-             else {
+        this.animationInterval = setInterval(() => {
+            this.moveEnemy();
+        }, 200); // Adjust the interval as needed
+    }
 
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
-            
-        }, 200);
-    }}
+    moveEnemy() {
+        if (this.isDead()) {
+            this.playAnimationOnce(this.IMAGES_DEAD);
+            this.speed = 0;
+            this.stopAllIntervals();
+        } else if (this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT);
+        } else {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
+    }
+
+    stopAnimationInterval() {
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
+    }
+
+    stopMovementInterval() {
+        if (this.movementInterval) {
+            clearInterval(this.movementInterval);
+            this.movementInterval = null;
+        }
+    }
+
+    stopAllIntervals() {
+        this.stopAnimationInterval();
+        this.stopMovementInterval();
+    }
+}

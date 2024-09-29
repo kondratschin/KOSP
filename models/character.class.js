@@ -100,7 +100,7 @@ class Character extends MovableObject {
 
             if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) { 
                 this.jump();
-                this.playJumpAnimation(this.IMAGES_JUMPING);
+                this.playAnimationOnce(this.IMAGES_JUMPING);
             }
 
             this.world.camera_x = -this.x + 50;
@@ -112,14 +112,12 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if(this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            } else if (!this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_STANDING);
             } else {
-
                 if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
-
                     // walk animation
                     this.playAnimation(this.IMAGES_WALKING);
+                } else if (!this.isAboveGround()) {
+                    this.playAnimation(this.IMAGES_STANDING);
                 }
             }
         }, 50);

@@ -33,6 +33,7 @@ class World {
         this.setFixedBackground('img/5_background/layers/sky.png', 0, 0, 720, 405);
         this.draw();
         this.setWorld();
+        this.shootInterval();
         this.run();
         this.createCoins();
         this.initialCoinsAmount = this.coins.length;
@@ -45,8 +46,14 @@ class World {
     run() {
         setInterval(() => {
             this.checkCollisions();
+
+        }, 1000 / 60);
+    }
+
+    shootInterval() {
+        setInterval(() => {
             this.checkFlyingObjects();
-        }, 100);
+        }, 1000 / 10);
     }
 
     checkFlyingObjects() {
@@ -82,7 +89,14 @@ class World {
             const enemyFrame = enemy.getFrameCoordinates();
     
             if (characterFrame && enemyFrame) {
-                if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt()) {
+                if (this.jumpAttack(characterFrame, enemyFrame) && !this.character.isHurt()) {
+                    enemy.hit();
+                    enemy.energy = Math.min(enemy.energy, 0);
+                }
+            }
+
+            if (characterFrame && enemyFrame) {
+                if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
                     this.character.hit();
                     let energy = Math.min(this.character.energy, 100);
                     this.statusBarSetPercentage.setPercentage(energy);
@@ -109,10 +123,10 @@ class World {
             this.enemies.forEach(enemy => {
                 const enemyFrame = enemy.getFrameCoordinates();
     
-                if (flyingObjectFrame && enemyFrame) {
+                if (flyingObjectFrame && enemyFrame && !enemy.isHurt()) {
                     if (this.isColliding(flyingObjectFrame, enemyFrame)) {
                         enemy.hit();
-                        enemy.energy = Math.min(enemy.energy, 0);
+                        enemy.energy = Math.min(enemy.energy, 1);
                         console.log(`Enemy energy: ${enemy.energy}`);
                     }
                 }
@@ -127,6 +141,15 @@ class World {
             frame1.x + frame1.width > frame2.x &&
             frame1.y < frame2.y + frame2.height &&
             frame1.y + frame1.height > frame2.y
+        );
+    }
+
+    jumpAttack(frame1, frame2) {
+        return (
+            frame1.y + frame1.height > frame2.y &&
+            frame1.y + frame1.height < frame2.y + frame2.height &&
+            frame1.x < frame2.x + frame2.width &&
+            frame1.x + frame1.width > frame2.x
         );
     }
 

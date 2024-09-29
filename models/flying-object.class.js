@@ -36,7 +36,4 @@ class FlyingObject extends MovableObject {
 
 
 
-stop() {
-    clearInterval(this.intervalId);
-}
 }
