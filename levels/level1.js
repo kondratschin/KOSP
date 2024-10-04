@@ -1,9 +1,9 @@
 const level1 = new Level(
     [
-        new Snake(),
-        new Snake(),
-        new Snake(),
-        new Orc(),
+        // new Snake(),
+        // new Snake(),
+        // new Snake(),
+        // new Orc(),
         new Endboss(),
     ],
 
