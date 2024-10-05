@@ -64,7 +64,7 @@ class World {
     run() {
         setInterval(() => {
             this.checkCollisions();
-
+            this.checkCharacterPositionForEnemies();
         }, 1000 / 60);
     }
 
@@ -88,6 +88,8 @@ class World {
         }
     }
 
+
+
     createCoins() {
         const coinPositions = [
             { x: 305, y: 240 },
@@ -103,14 +105,38 @@ class World {
         });
     }
 
+    checkCharacterPositionForEnemies() {
+        if (this.character.x === 800 && !this.enemiesSpawned) {
+            this.enemiesSpawned = true;
+
+            let snake1 = new Snake();
+            snake1.x = 1300 + Math.random() * 500;
+            this.enemies.push(snake1);
+
+            let snake2 = new Snake();
+            snake2.x = 1300 + Math.random() * 500;
+            this.enemies.push(snake2);
+
+            let snake3 = new Snake();
+            snake3.x = 1300 + Math.random() * 500;
+            this.enemies.push(snake3);
+
+            let orc = new Orc();
+            orc.x = 1300 + Math.random() * 500;
+            this.enemies.push(orc);
+        }
+    }
 
     createMana() {
         const manaPositions = [
-            { x: 205, y: 340 },
-            { x: 340, y: 220 },
-            { x: 380, y: 220 },
-            { x: 415, y: 240 },
-            { x: 900, y: 250 }
+            { x: 605, y: 240 },
+            { x: 640, y: 220 },
+            { x: 680, y: 220 },
+            { x: 715, y: 240 },
+            { x: 300, y: 400 },
+            { x: 600, y: 400 },
+            { x: 900, y: 400 },
+            { x: 1200, y: 400 }
         ];
 
         manaPositions.forEach(position => {
