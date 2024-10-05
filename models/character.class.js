@@ -18,7 +18,6 @@ class Character extends MovableObject {
         'img/2_character_knight/1_idle/idle/idle12.png'
     ];
 
-    
     IMAGES_WALKING = [
         'img/2_character_knight/2_walk/walk1.png',
         'img/2_character_knight/2_walk/walk2.png',
@@ -62,16 +61,15 @@ class Character extends MovableObject {
         'img/2_character_knight/2_walk/walk1.png'
     ];
 
-
-
     world;
     walking_sound = new Audio('audio/walking.mp3');
     jumping_sound = new Audio('audio/jumping.mp3');
-    
 
+    interactionInterval;
+    animationInterval;
+    movementInterval;
 
     constructor() {
-
         super().loadImage("img/2_character_knight/2_walk/walk1.png");
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_WALKING);
@@ -81,9 +79,10 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_STANDING);
         this.setInteractionTimer();
         this.applyGravity();
-        this.animate();
+        if (!this.isDead()) {
+            this.animate();
+        }
     }
-
 
     setInteractionTimer() {
         const interactionEvents = ['click', 'keydown', 'mousemove', 'touchstart'];
@@ -96,7 +95,7 @@ class Character extends MovableObject {
             window.addEventListener(event, interactionHandler);
         });
 
-        setInterval(() => {
+        this.interactionInterval = setInterval(() => {
             const currentTime = Date.now();
             if (currentTime - this.lastInteractionTime >= 3000) {
                 this.playIdleAnimation();
@@ -104,55 +103,69 @@ class Character extends MovableObject {
         }, 1300);
     }
 
-    
-
     playIdleAnimation() {
-            this.playAnimationOnce(this.IMAGES_IDLE);
-        }
+        this.playAnimationOnce(this.IMAGES_IDLE);
+    }
 
-    
     animate() {
-
-        setInterval(() => {
+        this.movementInterval = setInterval(() => {
+            if (this.isDead()) {
+                this.playAnimationOnce(this.IMAGES_DEAD);
+                this.stopAllIntervalsAndTimers();
+                return;
+            }
+    
             this.walking_sound.pause();
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && this.world.enemies[0].inFrontOfBoss === true) {
                 this.moveRight();
                 if (!this.isAboveGround()) {
-                  this.walking_sound.play();
+                    this.walking_sound.play();
                 }
             }
-
+    
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 if (!this.isAboveGround()) {
                     this.walking_sound.play();
-                  }
+                }
             }
-
-
-            if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) { 
+    
+            if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) {
                 this.jump();
                 this.jumping_sound.play();
                 this.playAnimationOnce(this.IMAGES_JUMPING);
             }
-
+    
             this.world.camera_x = -this.x + 50;
         }, 1000 / 60);
-
-        setInterval(() => {
-
-            if(this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else if(this.isHurt()) {
+    
+        this.animationInterval = setInterval(() => {
+            if (this.isDead()) {
+                this.playAnimationOnce(this.IMAGES_DEAD);
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else {
                 if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
-                    // walk animation
                     this.playAnimation(this.IMAGES_WALKING);
                 } else if (!this.isAboveGround() && Date.now() - this.lastInteractionTime < 3000) {
                     this.playAnimationOnce(this.IMAGES_STANDING);
                 }
             }
         }, 50);
+    }
+
+    stopAllIntervalsAndTimers() {
+        if (this.interactionInterval) {
+            clearInterval(this.interactionInterval);
+            this.interactionInterval = null;
+        }
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
+        if (this.movementInterval) {
+            clearInterval(this.movementInterval);
+            this.movementInterval = null;
+        }
     }
 }

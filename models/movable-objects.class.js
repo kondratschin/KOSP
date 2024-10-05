@@ -9,6 +9,7 @@ class MovableObject extends DrawableObject {
     endBossFrame = [+149, +120, -280, -195];
     coinFrame = [5.5, 5.5, -10, -10]; //mana uses the same coordinate system as coins
     flyingObjectFrame = [100, 135, -170, -200];
+    endBossAttackFrame = [0, 0, 0, 0];
     energy = 100;
     lastHit = 0;
     collectedCoins = 0;
@@ -28,8 +29,8 @@ class MovableObject extends DrawableObject {
         return this.y < 256;
     }
 
-    hit() {
-        this.energy -= 5;
+    hit(damage) {
+        this.energy -= damage;
         if (this.energy <= 0) {
             this.energy = 0;
         } else {

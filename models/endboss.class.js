@@ -7,7 +7,9 @@ class Endboss extends MovableObject {
     orcDead = new Audio('audio/orc_dead.mp3');
     enemyHit = new Audio('audio/enemy_hit.mp3');
     firstContact = null;
-    startWalking = null;
+    bossNearBy = null;
+    endBossStartDistance = 100;
+    endBossPosition = 400;
 
     IMAGES_WALKING = [
         'img/4_enemy_boss/1_walk/Walk1.png',
@@ -46,6 +48,14 @@ class Endboss extends MovableObject {
         'img/4_enemy_boss/3_attack/Attack7.png'
     ];
 
+    IMAGES_ANGER = [
+        'img/4_enemy_boss/6_anger/Anger1.png',
+        'img/4_enemy_boss/6_anger/Anger2.png',
+        'img/4_enemy_boss/6_anger/Anger3.png',
+        'img/4_enemy_boss/6_anger/Anger4.png',
+        'img/4_enemy_boss/6_anger/Anger5.png'
+    ];
+
     constructor() {
         super().loadImage("img/4_enemy_boss/2_idle/Idle1.png");
         this.loadImages(this.IMAGES_WALKING);
@@ -53,42 +63,78 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_ATTACK);
-        this.x = 1900;
+        this.loadImages(this.IMAGES_ANGER);
+        this.x = this.endBossPosition;
         this.speed = 0;
         this.animate();
     }
 
     animate() {
         this.animationInterval = setInterval(() => {
+            this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
+            this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
+            if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
+                this.stopAllIntervals();
+                this.playAngerAnimation();
+                
+            }
             this.playIdleAnimation();
-            if (world.character.x >= 1000) {
+
+            if (world.character.x >= this.endBossStartDistance) {
                 this.startAttack = true;
             }
-            if (world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0) {
-                this.playAnimation(this.IMAGES_ATTACK);
-            }
-            if (this.isHurt()) {
-                this.enemyHit.play();
-                this.playAnimationOnce(this.IMAGES_HURT);
-                this.speed = 0;
-            }
-            if (this.startAttack === true && this.energy > 0) {
-                if (!this.attackInterval) {
-                    this.endBossAttack();
-                }
-            }
+
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 this.orcDead.play();
                 this.speed = 0;
                 this.stopAllIntervals();
+                return;
             }
+
+            if (this.isHurt()) {
+                this.enemyHit.play();
+                this.playAnimationOnce(this.IMAGES_HURT);
+                this.speed = 0;
+                return;
+            }
+
+            if (this.startAttack && this.energy > 0 && !this.bossNearBy && this.inFrontOfBoss && this.firstContact) {
+                if (!this.attackInterval) {
+                    this.endBossAttack();
+                }
+            }
+
+            if (this.bossNearBy || !this.inFrontOfBoss) {
+                this.stopEndBossAttack();
+            }
+
+            this.nearAttack(this.bossNearBy);
         }, 200);
+    }
+
+    nearAttack(bossNearBy) {
+        if (bossNearBy) {
+            this.endBossFrame =  [+0, +120, -130, -195];
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.stopMovementInterval();
+        }
     }
 
     playIdleAnimation() {
         if (this.speed === 0) {
             this.playAnimation(this.IMAGES_IDLE);
+            this.endBossFrame =   [+149, +120, -280, -195];;
+        }
+    }
+
+    playAngerAnimation() {
+        if (this.speed === 0) {
+            this.playAnimationOnce(this.IMAGES_ANGER);
+            setTimeout(() => {
+                this.firstContact = true;
+                this.animate();
+            }, 2000);
         }
     }
 
@@ -106,11 +152,19 @@ class Endboss extends MovableObject {
         }
 
         setTimeout(() => {
-            this.speed = 0;
-            this.attackInterval = setTimeout(() => {
-                this.endBossAttack();
-            }, 4000);
+            if (!this.bossNearBy) {
+                this.speed = 0;
+                this.attackInterval = setTimeout(() => {
+                    this.endBossAttack();
+                }, 4000);
+            }
         }, 1000);
+    }
+
+    stopEndBossAttack() {
+        this.stopMovementInterval();
+        this.stopAttackInterval();
+        this.speed = 0;
     }
 
     stopMovementInterval() {
@@ -139,72 +193,4 @@ class Endboss extends MovableObject {
             this.animationInterval = null;
         }
     }
-
-    stopEndBossAttack() {
-        this.stopMovementInterval();
-        this.stopAttackInterval();
-        this.speed = 0;
-    }
 }
-
-//     animate() {
-//         this.intervallEndBossAnimation = setInterval(() => {
-//             if (this.endBossCanStart()) {
-//                 this.playAnimation(this.IMAGES_WALKING);
-//                 // if (!soundMute) {
-//                 //     game_music.pause();
-//                 //     this.endboss_music.play();
-//                 // }
-//             } else if (this.isHurt()) {
-//                 this.playAnimation(this.IMAGES_HURT);
-//             } else if (this.isDead()) {
-//                 this.speed = 0;
-//                 // this.endboss_music.pause();
-//                 this.playAnimationOnce(this.IMAGES_DEAD);
-//                 this.endbossGameOver = true;
-//             }
-//         }, 200);
-//         this.checkDistance();
-//     }
-
-//     endBossCanStart() {
-//         return this.startWalking && !this.isHurt() && !this.isDead();
-//     }
-
-//     endBossHurt() {
-//         return this.startWalking && this.isHurt() && !this.isDead();
-//     }
-
-//     animateFirstContact() {
-//         let i = 0;
-//         clearInterval(this.intervallEndBossAnimation);
-//         this.endBossFirstContactIntervall = setInterval(() => {
-//             if (i < 10) {
-//                 this.playAnimation(this.IMAGES_IDLE);
-//             } else {
-//                 this.playAnimation(this.IMAGES_ATTACK);
-//             }
-//             i++;
-//             if (world.character.x > 1000 && !this.firstContact) {
-//                 i = 0;
-//                 this.firstContact = true;
-//             }
-//         }, 150);
-//     }
-
-//     animateHit() {
-//         setInterval(() => {
-//             if (this.isHurt()) {
-//                 this.playAnimation(this.IMAGES_HURT);
-//             }
-//         }, 200);
-//     }
-
-//     checkDistance() {
-//         setInterval(() => {
-//             if (this.startWalking === true) {
-//                 this.moveLeft();
-//             }
-//         }, 200);
-//     }
-// }

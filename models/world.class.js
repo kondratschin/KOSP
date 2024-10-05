@@ -30,6 +30,10 @@ class World {
     backgroundSound = new Audio('audio/background.mp3');
     coinSound = new Audio('audio/coin.mp3');
     potionSound = new Audio('audio/potion.mp3');
+    endBossDamage = 50;
+    enemyDamage = 5;
+    knightDamage = 10;
+    fireDamage = 5;
 
 
     constructor(canvas, keyboard) {
@@ -117,7 +121,7 @@ class World {
     
             if ((characterFrame && enemyFrame) && this.character.speedY > 0 && !(enemy instanceof Endboss)) {    
                 if (this.jumpAttack(characterFrame, enemyFrame)) {
-                    enemy.hit();
+                    enemy.hit(this.knightDamage);
                     enemy.energy = Math.min(enemy.energy, 0);
                 }
             }
@@ -125,7 +129,8 @@ class World {
 
             if (characterFrame && enemyFrame) {
                 if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
-                    this.character.hit();
+                    let damage = enemy instanceof Endboss ? this.endBossDamage : this.enemyDamage;
+                    this.character.hit(damage);
                     let energy = Math.min(this.character.energy, 100);
                     this.statusBarSetPercentage.setPercentage(energy);
                 }
@@ -168,7 +173,7 @@ class World {
     
                 if (flyingObjectFrame && enemyFrame && !enemy.isHurt()) {
                     if (this.isColliding(flyingObjectFrame, enemyFrame)) {
-                        enemy.hit();
+                        enemy.hit(this.fireDamage);
                         enemy.energy = Math.min(enemy.energy, 1);
                         console.log(`Enemy energy: ${enemy.energy}`);
                     }
