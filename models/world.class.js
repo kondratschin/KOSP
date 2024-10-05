@@ -96,7 +96,10 @@ class World {
             { x: 340, y: 220 },
             { x: 380, y: 220 },
             { x: 415, y: 240 },
-            { x: 1000, y: 250 }
+            { x: 1000, y: 250 },
+            { x: 1100, y: 250 },
+            { x: 1200, y: 250 },
+            { x: 1300, y: 250 }
         ];
 
         coinPositions.forEach(position => {
@@ -136,7 +139,10 @@ class World {
             { x: 300, y: 400 },
             { x: 600, y: 400 },
             { x: 900, y: 400 },
-            { x: 1200, y: 400 }
+            { x: 1200, y: 400 },
+            { x: 1500, y: 400 },
+            { x: 1550, y: 400 }
+
         ];
 
         manaPositions.forEach(position => {
