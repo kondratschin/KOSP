@@ -16,35 +16,43 @@ class DrawableObject {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
-        /**
-         * 
-         * @param {Array} arr 
-         */
-        loadImages(arr) {
-            arr.forEach((path) => {
-                let img = new Image();
-                img.src = path;
-                this.imageCache[path] = img;
-            });
-        }
+    /**
+     * 
+     * @param {Array} arr 
+     */
+    loadImages(arr) {
+        arr.forEach((path) => {
+            let img = new Image();
+            img.src = path;
+            this.imageCache[path] = img;
+        });
+    }
 
-        drawFrame(ctx) {
-            const shouldDrawFrame = this instanceof Character || this instanceof Endboss || this instanceof Orc || this instanceof Snake || this instanceof Coins || this instanceof Mana || this instanceof FlyingObject;
-            const SnakeAlive = !(this instanceof Snake && this.isDead());
-            const OrcAlive = !(this instanceof Orc && this.isDead());
+    drawFrame(ctx) {
+        const shouldDrawFrame =
+            (this instanceof Character) ||
+            (this instanceof Endboss && this.firstContact) ||
+            (this instanceof Orc) ||
+            (this instanceof Snake) ||
+            (this instanceof Coins) ||
+            (this instanceof Mana) ||
+            (this instanceof FlyingObject);
+        const SnakeAlive = !(this instanceof Snake && this.isDead());
+        const OrcAlive = !(this instanceof Orc && this.isDead());
 
-            if (shouldDrawFrame && SnakeAlive && OrcAlive) {
-                ctx.beginPath();
-                ctx.lineWidth = '5';
-                ctx.strokeStyle = 'red';
 
-                const frame = this.getFrameCoordinates();
-                if (frame) {
-                    ctx.rect(frame.x, frame.y, frame.width, frame.height);
-                }
+        if (shouldDrawFrame && SnakeAlive && OrcAlive) {
+            ctx.beginPath();
+            ctx.lineWidth = '5';
+            ctx.strokeStyle = 'red';
 
-                ctx.stroke();
+            const frame = this.getFrameCoordinates();
+            if (frame) {
+                ctx.rect(frame.x, frame.y, frame.width, frame.height);
             }
+
+            ctx.stroke();
         }
+    }
 
 }

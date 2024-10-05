@@ -8,8 +8,9 @@ class Endboss extends MovableObject {
     enemyHit = new Audio('audio/enemy_hit.mp3');
     firstContact = null;
     bossNearBy = null;
-    endBossStartDistance = 100;
-    endBossPosition = 400;
+    endBossStartDistance = 1500; //1500
+    endBossPosition = 1900;  //1900
+    energy = 20;
 
     IMAGES_WALKING = [
         'img/4_enemy_boss/1_walk/Walk1.png',

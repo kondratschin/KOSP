@@ -59,6 +59,10 @@ class MovableObject extends DrawableObject {
             Endboss: this.endBossFrame
         };
 
+        if (this.constructor.name === 'Endboss' && !this.firstContact) {
+            return null;
+        }
+
         const frame = frameMap[this.constructor.name];
         if (frame) {
             return {

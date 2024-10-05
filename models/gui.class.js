@@ -3,7 +3,9 @@ class GUI extends DrawableObject {
         'img/7_statusbars/1_icons/character_info_full.png',
         'img/2_character_knight/1_idle/long_idle/idle1.png',
         'img/7_statusbars/1_icons/icon_coin.png',
-        'img/7_statusbars/1_icons/icon_magic_attack.png'
+        'img/7_statusbars/1_icons/icon_magic_attack.png',
+        'img/7_statusbars/1_icons/endboss_info_full.png',
+        'img/4_enemy_boss/2_idle/Idle1.png'
 
     ];
 
@@ -13,12 +15,17 @@ class GUI extends DrawableObject {
         this.loadImages(this.IMAGES);
         if (initMethod === 'GUI') {
             this.guiFrame();
+        }
+        if (initMethod === 'GUIBoss') {
+            this.guiFrameBoss();
         } else if (initMethod === 'knightGUI') {
             this.knightGUI();
         } else if (initMethod === 'goldGUI') {
             this.goldGUI();
         } else if (initMethod === 'magicGUI') {
             this.magicGUI();
+        } else if (initMethod === 'bossImage') {
+            this.bossImage();
         }
     }
 
@@ -31,6 +38,22 @@ class GUI extends DrawableObject {
         this.height = 79;
     }
 
+    guiFrameBoss() {
+        this.img = this.imageCache[this.IMAGES[4]];
+        this.x = 496;
+        this.y = 24;
+        this.width = 202;
+        this.height = 79;
+    }
+
+    bossImage() {
+        this.img = this.imageCache[this.IMAGES[5]];
+        this.x = 612;
+        this.y = -12;
+        this.width = 130;
+        this.height = 130;
+        this.otherDirection = true;
+    }
 
     knightGUI() {
         this.img = this.imageCache[this.IMAGES[1]];

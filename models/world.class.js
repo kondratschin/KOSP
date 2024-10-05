@@ -12,6 +12,9 @@ class World {
     statusBarLeftCorner = new StatusBar('leftCorner');
     statusBarSetPercentage = new StatusBar('setPercentage');
     statusBarRightCorner = new StatusBar('rightCorner');
+    statusBarBossLeftCorner = new StatusBar('leftCornerBoss');
+    statusBarBossSetPercentage = new StatusBar('setPercentageBoss');
+    statusBarBossRightCorner = new StatusBar('rightCornerBoss');
     magicBarLeftCorner = new MagicBar('leftCorner');
     magicBarSetPercentage = new MagicBar('setPercentage');
     magicBarRightCorner = new MagicBar('rightCorner');
@@ -20,6 +23,8 @@ class World {
     goldBarRightCorner = new GoldBar('rightCorner');
     guiFrame = new GUI('GUI');
     characterGUI = new GUI('knightGUI');
+    BossGUI = new GUI('GUIBoss');
+    bossImage = new GUI('bossImage');
     goldGUI = new GUI('goldGUI');
     magicGUI = new GUI('magicGUI');
     flyingObjects = [new FlyingObject()];
@@ -174,7 +179,12 @@ class World {
                 if (flyingObjectFrame && enemyFrame && !enemy.isHurt()) {
                     if (this.isColliding(flyingObjectFrame, enemyFrame)) {
                         enemy.hit(this.fireDamage);
-                        enemy.energy = Math.min(enemy.energy, 1);
+                        if (!(enemy instanceof Endboss)) {
+                            enemy.energy = Math.min(enemy.energy, 1);
+                        }
+                        if (enemy instanceof Endboss) {
+                            this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
+                        }
                         console.log(`Enemy energy: ${enemy.energy}`);
                     }
                 }
@@ -227,10 +237,22 @@ class World {
             this.addToMap(this.statusBarLeftCorner);
         }
         if (this.character.energy === 100) {
-        this.addToMap(this.statusBarRightCorner);
+            this.addToMap(this.statusBarRightCorner);
         }
         this.addToMap(this.statusBarSetPercentage);
 
+
+        if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.firstContact)) {
+            this.addToMap(this.BossGUI);
+            this.addToMap(this.bossImage);
+            this.addToMap(this.statusBarBossSetPercentage);
+            if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy === world.statusBarBossSetPercentage.energyBoss)) {
+            this.addToMap(this.statusBarBossRightCorner);
+            }
+            if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy > 0)) {
+                this.addToMap(this.statusBarBossLeftCorner);
+                }
+        }
 
 
         if (this.character.collectedBottles > 0) {            
@@ -251,6 +273,8 @@ class World {
         if (this.character.collectedCoins === this.initialCoinsAmount) {
             this.addToMap(this.goldBarRightCorner);
         }
+
+
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
 
 
