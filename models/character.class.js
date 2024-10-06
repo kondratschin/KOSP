@@ -65,6 +65,7 @@ class Character extends MovableObject {
     world;
     walking_sound = new Audio('audio/walking.mp3');
     jumping_sound = new Audio('audio/jumping.mp3');
+    dying_sound = new Audio('audio/character_dead.mp3');
 
     interactionInterval;
     animationInterval;
@@ -111,6 +112,9 @@ class Character extends MovableObject {
     animate() {
         this.movementInterval = setInterval(() => {
             if (this.isDead()) {
+                if (!soundMute) {
+                    this.dying_sound.play();
+                }
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 this.stopAllIntervalsAndTimers();
                 setTimeout(() => {

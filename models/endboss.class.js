@@ -4,12 +4,13 @@ class Endboss extends MovableObject {
     width = 380;
     otherDirection = true;
     endBossMusic = new Audio('audio/endboss.mp3');
-    orcDead = new Audio('audio/orc_dead.mp3');
+    endBossDeadSound = new Audio('audio/endboss_dead.mp3');
     enemyHit = new Audio('audio/enemy_hit.mp3');
     firstContact = null;
     bossNearBy = null;
     endBossStartDistance = 1500; //1500
     endBossPosition = 1900;  //1900
+    endBossThreat = new Audio('audio/endboss_threat.mp3');
     energy = 20;
     endBossDead = false;
 
@@ -76,7 +77,11 @@ class Endboss extends MovableObject {
             this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
             this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
             if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
+                game_music.pause();
+                if (!soundMute) {
+                this.endBossThreat.play();
                 this.endBossMusic.play();
+                }
                 this.stopAllIntervals();
                 this.playAngerAnimation();                
             }
@@ -89,7 +94,7 @@ class Endboss extends MovableObject {
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 if (!soundMute) {
-                this.orcDead.play();
+                this.endBossDeadSound.play();
                 }
                 this.speed = 0;
                 this.stopAllIntervals();
