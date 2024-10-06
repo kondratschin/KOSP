@@ -52,7 +52,9 @@ class Orc extends MovableObject {
 
     moveEnemy() {
         if (this.isDead()) {
+            if (!soundMute) {
             this.orcDead.play();
+            }
             this.playAnimationOnce(this.IMAGES_DEAD);
             this.speed = 0;
             this.stopAllIntervals();
@@ -60,7 +62,9 @@ class Orc extends MovableObject {
                 this.removeCorpse = true;
             }, 1500);
         } else if (this.isHurt()) {
+            if (!soundMute) {
             this.snakeHit.play();
+            }
             this.playAnimationOnce(this.IMAGES_HURT);
             this.speed = 0;
             setTimeout(() => {

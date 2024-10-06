@@ -3,7 +3,7 @@ class Endboss extends MovableObject {
     height = 380;
     width = 380;
     otherDirection = true;
-    endBossMusic = new Audio('audio/orc_dead.mp3');
+    endBossMusic = new Audio('audio/endboss.mp3');
     orcDead = new Audio('audio/orc_dead.mp3');
     enemyHit = new Audio('audio/enemy_hit.mp3');
     firstContact = null;
@@ -11,6 +11,7 @@ class Endboss extends MovableObject {
     endBossStartDistance = 1500; //1500
     endBossPosition = 1900;  //1900
     energy = 20;
+    endBossDead = false;
 
     IMAGES_WALKING = [
         'img/4_enemy_boss/1_walk/Walk1.png',
@@ -75,9 +76,9 @@ class Endboss extends MovableObject {
             this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
             this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
             if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
+                this.endBossMusic.play();
                 this.stopAllIntervals();
-                this.playAngerAnimation();
-                
+                this.playAngerAnimation();                
             }
             this.playIdleAnimation();
 
@@ -87,14 +88,19 @@ class Endboss extends MovableObject {
 
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
+                if (!soundMute) {
                 this.orcDead.play();
+                }
                 this.speed = 0;
                 this.stopAllIntervals();
+                this.endBossDead = true;
                 return;
             }
 
             if (this.isHurt()) {
+                if (!soundMute) {
                 this.enemyHit.play();
+                }
                 this.playAnimationOnce(this.IMAGES_HURT);
                 this.speed = 0;
                 return;
@@ -103,6 +109,7 @@ class Endboss extends MovableObject {
             if (this.startAttack && this.energy > 0 && !this.bossNearBy && this.inFrontOfBoss && this.firstContact) {
                 if (!this.attackInterval) {
                     this.endBossAttack();
+
                 }
             }
 

@@ -32,7 +32,7 @@ class World {
     initialCoinsAmount = 0;
     manaBottles = [];
     magicBarFullAmount = 10;
-    backgroundSound = new Audio('audio/background.mp3');
+
     coinSound = new Audio('audio/coin.mp3');
     potionSound = new Audio('audio/potion.mp3');
     endBossDamage = 50;
@@ -42,8 +42,8 @@ class World {
 
 
     constructor(canvas, keyboard) {
-        this.backgroundSound.volume = 0.055;
-        this.backgroundSound.play();
+        // this.backgroundSound.volume = 0.055;
+        // this.backgroundSound.play();
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -65,6 +65,8 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkCharacterPositionForEnemies();
+            this.checkGameOver();
+            this.checkWinGame();
         }, 1000 / 60);
     }
 
@@ -180,7 +182,9 @@ class World {
     
             if (characterFrame && coinFrame) {
                 if (this.isColliding(characterFrame, coinFrame)) {
+                    if (!soundMute) {
                     this.coinSound.play();
+                    }
                     this.coins = this.coins.filter(c => c !== coin);
                     this.character.collectedCoins += 1; // Increase the coins by 1
                     this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
@@ -194,7 +198,9 @@ class World {
     
             if (characterFrame && manaFrame) {
                 if (this.isColliding(characterFrame, manaFrame)) {
+                    if (!soundMute) {
                     this.potionSound.play();
+                    }
                     this.manaBottles = this.manaBottles.filter(m => m !== mana);
                     this.character.collectedBottles += 1; // Increase the magic by 1
                     this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
@@ -353,5 +359,27 @@ class World {
         this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
         this.ctx.restore();
     }
+
+    /**
+     * Check if the character is game over and the game ends
+     * 
+     */
+    checkGameOver() {
+        if (this.character.gameOver) {
+            // this.endboss.endboss_music.pause();
+            gameOver();
+        }
+    }
+
+        /**
+     * Check if the endboss is dead and the game was won
+     * 
+     */
+        checkWinGame() {
+            if (world.enemies[0].endBossDead) {
+                // this.endboss.endboss_music.pause();
+                winGame();
+            }
+        }
 
 }

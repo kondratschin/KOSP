@@ -5,6 +5,9 @@ let intervalIds = [];
 let fullScreen = false;
 let gameStarted = false;
 let soundMute = false;
+let game_music = new Audio('audio/background.mp3');
+let game_over_sound = new Audio('audio/background.mp3');
+let game_win_sound = new Audio('audio/background.mp3');
 
 function init() {
     // checkDeviceMode();

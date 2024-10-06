@@ -2,6 +2,7 @@ class Character extends MovableObject {
     y = 124;
     speed = 5;
     speedY = 0;
+    gameOver = false;
 
     IMAGES_IDLE = [
         'img/2_character_knight/1_idle/idle/idle1.png',
@@ -114,6 +115,7 @@ class Character extends MovableObject {
                 this.stopAllIntervalsAndTimers();
                 setTimeout(() => {
                     this.removeCorpse = true;
+                    this.gameOver = true;
                 }, 1000);
                 return;
             }
@@ -121,21 +123,23 @@ class Character extends MovableObject {
             this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && this.world.enemies[0].inFrontOfBoss === true) {
                 this.moveRight();
-                if (!this.isAboveGround()) {
+                if (!this.isAboveGround() && !soundMute) {
                     this.walking_sound.play();
                 }
             }
     
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
-                if (!this.isAboveGround()) {
+                if (!this.isAboveGround() && !soundMute) {
                     this.walking_sound.play();
                 }
             }
     
             if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) {
                 this.jump();
+                if (!soundMute) {
                 this.jumping_sound.play();
+                }
                 this.playAnimationOnce(this.IMAGES_JUMPING);
             }
     
