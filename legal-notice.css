@@ -1,0 +1,155 @@
+body {
+    margin: 0;
+    background-color: rgb(246, 247, 248);
+    font-family: "Arial";
+    background-color: sandybrown;
+  }
+  
+  .knight-legal {
+    right: 215px;
+    top: -64px;
+    position: absolute;
+    height: 500px;
+  }
+  
+  .arrow-left {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+    height: 25px;
+    z-index: 10;
+  }
+  
+  .arrow-left:hover {
+    cursor: pointer;
+  }
+  
+  .header {
+    height: 90px;
+  }
+  
+  .rightContent h1 {
+    font-size: 61px;
+    margin-bottom: 50px;
+  }
+  
+  .rightContent h2 {
+    font-size: 27px;
+    margin-bottom: 10px;
+  }
+  
+  .link a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .help {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    width: calc(100% - 200px);
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 70px;
+    font-family: "Bree Serif";
+  }
+  
+  .help p {
+    font-size: 16px;
+    margin-bottom: 50px;
+  }
+  
+  .subtitle {
+    margin-bottom: 40px;
+  }
+  
+  li {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  li span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 1200px) {
+    .help {
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      width: calc(100% - 100px);
+    }
+  
+    .arrow-left {
+      left: 50px;
+    }
+  }
+  
+  @media (max-width: 1000px) {
+    .knight-legal {
+      right: 145px;
+      top: -15px;
+      position: absolute;
+      height: 400px;
+    }
+  }
+  
+  @media (max-width: 800px) {
+    .knight-legal {
+      right: 96px;
+      top: 16px;
+      position: absolute;
+      height: 300px;
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .knight-legal {
+      right: 30px;
+    }
+  }
+  
+  @media (max-width: 530px) {
+    .knight-legal {
+      height: 250px;
+      right: 10px;
+      top: 60px;
+    }
+  }
+  
+  @media (max-width: 430px) {
+    .rightContent h1 {
+      font-size: 40px;
+      margin-bottom: 30px;
+    }
+    .rightContent h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .help {
+      padding-top: 20px;
+    }
+    ol {
+      margin-bottom: 70px;
+    }
+    .help {
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 30px;
+      width: calc(100% - 40px);
+    }
+    .arrow-left {
+      left: 20px;
+      height: 20px;
+    }
+  }
+  
+  @media (max-width: 370px) {
+    .knight-legal {
+      top: 81px;
+    }
+  }

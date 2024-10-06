@@ -7,11 +7,13 @@ let gameStarted = false;
 let soundMute = false;
 let soundButtonMute = false;
 let game_music = new Audio('audio/background.mp3');
-let game_over_sound = new Audio('audio/background.mp3');
-let game_win_sound = new Audio('audio/background.mp3');
+let game_over_sound = new Audio('audio/gameover.mp3');
+let game_win_sound = new Audio('audio/gamewon.mp3');
 
 function init() {
     // checkDeviceMode();
+    soundMute = true;
+    game_music.pause();
     startGameWithEnter();
 }
 
@@ -102,11 +104,11 @@ function closeStartScreen() {
     setTimeout(() => {
         document.getElementById('start-screen').classList.add('d-none');
         document.getElementById('btn-start-game').classList.add('d-none');
-        if (!soundMute) {
+        if (!soundMute && !soundButtonMute) {
             soundOn();
         }
-        keyboard.buttonKeyPressEvents();
-        keyboard.buttonKeyPressEventsUndo();
+        // keyboard.buttonKeyPressEvents();
+        // keyboard.buttonKeyPressEventsUndo();
     }, 1000);
 }
 
@@ -162,7 +164,11 @@ function backToStartScreen() {
 }
 
 function gameOver() {
+    if (!soundMute) {
+        game_over_sound.play();
+    }
     game_music.pause();
+    world.enemies[0].endBossMusic.pause();
     clearAllIntervals();
     document.getElementById('overlay-grey').classList.add('d-flex');
     document.getElementById('game-over-screen').classList.add('d-flex');
@@ -170,13 +176,15 @@ function gameOver() {
     backToStartScreen();
     init();
     gameStarted = false;
-    if (!soundMute) {
-        game_over_sound.play();
-    }
+
 }
 
 function winGame() {
+    if (!soundMute && !soundButtonMute) {
+        game_win_sound.play();
+    }
     game_music.pause();
+    world.enemies[0].endBossMusic.pause();
     clearAllIntervals();
     document.getElementById('overlay-grey').classList.add('d-flex');
     document.getElementById('win-screen').classList.add('d-flex');
@@ -184,9 +192,7 @@ function winGame() {
     backToStartScreen();
     init();
     gameStarted = false;
-    if (!soundMute) {
-        game_win_sound.play();
-    }
+
 }
 
 function soundOn() {

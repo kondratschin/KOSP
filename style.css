@@ -103,32 +103,41 @@ canvas {
     align-items: center;
     width: 720px;
     font-size: 16px;
+    font-weight: bold;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
+    /* filter: invert(1); */
 }
 
 .key {
     display: flex;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(10px);
+    padding: 6px;
+    border-radius: 8px;
 }
 
 .key img {
     height: 32px;
     margin-right: 4px;
+    filter: invert(1);
 }
 
 .key-text {
     margin-top: 4px;
+    color: white;
 }
 
 .D {
-    border: 3.5px solid black;
+    border: 3.5px solid rgb(255, 255, 255);
     border-radius: 7px;
     font-family: 'Bree Serif';
     font-weight: 800;
     font-size: 18.5px;
     padding: 0px 6px;
     margin-right: 4px;
+    color: white;
 }
 
 .start-screen {
@@ -153,6 +162,11 @@ canvas {
     left: 0;
     right: 0;
     bottom: 0;
+    font-size: 80px;
+    color: white;
+
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-start-game {
@@ -298,14 +312,14 @@ h1 {
 }
 
 .btn-walk-left {
-    background-color: transparent;
-    border: 2px solid white;
-    background-color: #f3a933;
-    border-radius: 15px;
+    border: 2px solid rgba(0, 0, 0, 0.445);
+    background-color: rgba(255, 255, 255, 0.336);
+    border-radius: 10px;
     padding: 6px 8px;
-    margin-right: 40px;
     height: 35px;
-    width: 70px;
+    width: 64px;
+    backdrop-filter: blur(2px);
+    margin-right: 36px;
 }
 
 .btn-walk-left img {
@@ -314,13 +328,13 @@ h1 {
 }
 
 .btn-walk-right {
-    background-color: transparent;
-    border: 2px solid white;
-    background-color: #f3a933;
-    border-radius: 15px;
+    border: 2px solid rgba(0, 0, 0, 0.445);
+    background-color: rgba(255, 255, 255, 0.336);
+    border-radius: 10px;
     padding: 6px 8px;
     height: 35px;
-    width: 70px;
+    width: 64px;
+    backdrop-filter: blur(2px);
 }
 
 .btn-walk-right img {
@@ -329,14 +343,14 @@ h1 {
 }
 
 .btn-jump {
-    background-color: transparent;
-    border: 2px solid white;
-    background-color: #f3a933;
-    border-radius: 15px;
+    border: 2px solid rgba(0, 0, 0, 0.445);
+    background-color: rgba(255, 255, 255, 0.336);
+    border-radius: 10px;
     padding: 6px 8px;
     height: 35px;
-    width: 70px;
-    margin-right: 40px;
+    width: 64px;
+    backdrop-filter: blur(2px);
+    margin-right: 36px;
 }
 
 .btn-jump img {
@@ -344,13 +358,13 @@ h1 {
 }
 
 .btn-throw {
-    background-color: transparent;
-    border: 2px solid white;
-    background-color: #f3a933;
-    border-radius: 15px;
-    padding: 5px 5px;
+    border: 2px solid rgba(0, 0, 0, 0.445);
+    background-color: rgba(255, 255, 255, 0.336);
+    border-radius: 10px;
+    padding: 6px 8px;
     height: 35px;
-    width: 70px;
+    width: 64px;
+    backdrop-filter: blur(2px);
 }
 
 .btn-throw img {
@@ -402,7 +416,7 @@ h1 {
     right: 40px;
     font-size: 15px;
     color: lightgrey;
-    font-family: 'Bree Serif';
+    font-family: 'Arial';
 }
 
 .legal-notice:hover {

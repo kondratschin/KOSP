@@ -35,7 +35,12 @@
 
 <body onload="init()">
 
-        <h1>KOSP</h1>
+        <h1 style="font-size: 24px;">
+            <span style="font-size: 50px;">K</span>nights 
+            <span style="font-size: 50px;">O</span>f 
+            <span style="font-size: 50px;">S</span>hadow 
+            <span style="font-size: 50px;">P</span>eaks
+        </h1>
 
         <div class="key-description">
             <div class="key">
@@ -61,8 +66,10 @@
         <canvas id="canvas" width="720px" height="480px"></canvas>
 
         <img class="start-screen" id="start-screen" src="img/9_intro_outro_screens/start/startscreen_1.png">
-        <img class="game-over-screen" id="game-over-screen" src="img/9_intro_outro_screens/game_over/oh no you lost!.png">
-        <img class="game-over-screen" id="win-screen" src="img/9_intro_outro_screens/game_over/game over!.png">
+        <span class="game-over-screen" id="game-over-screen">Game Over!</span>
+        <!-- <img class="game-over-screen" id="game-over-screen" src="img/9_intro_outro_screens/game_over/oh no you lost!.png"> -->
+        <!-- <img class="game-over-screen" id="win-screen" src="img/9_intro_outro_screens/game_over/game over!.png"> -->
+        <span class="game-over-screen" id="win-screen">You Win!</span>
 
         <button onclick="startGame()" id="btn-start-game" class="btn-start-game">START GAME</button>
 

@@ -35,7 +35,7 @@ class World {
     magicBarFullAmount = 10;
 
     coinSound = new Audio('audio/coin.mp3');
-    potionSound = new Audio('audio/potion.mp3');
+    potionSound = new Audio('audio/potion_glass.mp3');
     endBossDamage = 50;
     enemyDamage = 5;
     knightDamage = 10;
@@ -367,7 +367,7 @@ class World {
      */
     checkGameOver() {
         if (this.character.gameOver) {
-            // this.endboss.endboss_music.pause();
+
             gameOver();
         }
     }
