@@ -43,8 +43,8 @@ class DrawableObject {
 
         if (shouldDrawFrame && SnakeAlive && OrcAlive) {
             ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = 'red';
+            ctx.lineWidth = '0';
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
 
             const frame = this.getFrameCoordinates();
             if (frame) {

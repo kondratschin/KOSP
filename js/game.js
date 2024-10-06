@@ -92,10 +92,13 @@ function startGame() {
     world = new World(canvas, keyboard);
     gameStarted = true;
     closeStartScreen();
+
     if (!soundButtonMute) {
     setTimeout(() => {
         soundMute = false;
+        document.getElementById('game-title-mobile').classList.add('d-none');
     }, 500);
+
 }
 
 }
