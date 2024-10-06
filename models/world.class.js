@@ -316,7 +316,9 @@ class World {
 
         // -------- space for fixed objects ----------------
         this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.character);
+        if (!this.character.removeCorpse) {
+            this.addToMap(this.character);
+        }
         this.addObjectsToMap(this.level.enemies.filter(enemy => !enemy.removeCorpse));
         this.addObjectsToMap(this.flyingObjects);
         this.ctx.translate(-this.camera_x, 0);

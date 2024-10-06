@@ -13,14 +13,21 @@
 body {
     height: 100vh;
     width: 100vw;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     font-family: 'Metamorphous', Arial, Helvetica, sans-serif;
     background-image: url('img/5_background/kosp_bkgnd.png');
     background-position: center;
     background-size: cover;
 }
+
+
+
+
+
 
 .game {
     display: flex;
@@ -33,7 +40,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
-h1  {
+h1 {
     font-size: 3rem;
     color: white;
     margin-top: 2rem;
@@ -59,9 +66,459 @@ canvas {
     h1 {
         display: none;
     }
-    
+
     canvas {
-        border-radius: 0;
+
         height: 100vh;
     }
+}
+
+/* test */
+
+
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 65px;
+}
+
+.container-canvas {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+canvas {
+    display: block;
+    background-color: black;
+}
+
+.key-description {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 720px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.key {
+    display: flex;
+    align-items: center;
+}
+
+.key img {
+    height: 32px;
+    margin-right: 4px;
+}
+
+.key-text {
+    margin-top: 4px;
+}
+
+.D {
+    border: 3.5px solid black;
+    border-radius: 7px;
+    font-family: 'Bree Serif';
+    font-weight: 800;
+    font-size: 18.5px;
+    padding: 0px 6px;
+    margin-right: 4px;
+}
+
+.start-screen {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 20px;
+}
+
+.game-over-screen {
+    display: none;
+    height: 100%;
+    width: 100%;
+    z-index: 11;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.btn-start-game {
+    font-family: 'Metamorphous', Arial, Helvetica, sans-serif;
+    position: absolute;
+    z-index: 11;
+    top: 20px;
+    font-size: 22px;
+    background-color: rgba(255, 255, 255, 0.336);
+    border: 2px solid rgba(0, 0, 0, 0.445);
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 400;
+    backdrop-filter: blur(5px);
+}
+
+.btn-start-game:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.548);
+}
+
+.btn-sound-on {
+    position: absolute;
+    z-index: 11;
+    border: none;
+    right: 55px;
+    bottom: 5px;
+    background-color: transparent;
+}
+
+.btn-sound-on img {
+    height: 25px;
+    filter: invert(0.1);
+    opacity: 80%;
+}
+
+.btn-sound-on:hover {
+    cursor: pointer;
+    filter: invert(0.2);
+}
+
+.btn-sound-off {
+    display: none;
+    position: absolute;
+    z-index: 11;
+    border: none;
+    right: 55px;
+    bottom: 9px;
+    background-color: transparent;
+}
+
+.btn-sound-off img {
+    height: 25px;
+    filter: invert(0.1);
+    opacity: 80%;
+}
+
+.btn-sound-off:hover {
+    cursor: pointer;
+    filter: invert(0.2);
+}
+
+.btn-full-screen {
+    position: absolute;
+    z-index: 11;
+    border: none;
+    right: 12px;
+    bottom: 7px;
+    background-color: transparent;
+}
+
+.btn-full-screen img {
+    height: 20px;
+    filter: invert(0.1);
+    opacity: 80%;
+}
+
+.btn-full-screen:hover {
+    cursor: pointer;
+    filter: invert(0.2);
+}
+
+.btn-close-full-screen {
+    display: none;
+    position: absolute;
+    z-index: 11;
+    border: none;
+    right: 12px;
+    bottom: 7px;
+    background-color: transparent;
+}
+
+.btn-close-full-screen img {
+    height: 20px;
+    filter: invert(0.1);
+    opacity: 80%;
+    margin-bottom: 4px;
+}
+
+.btn-close-full-screen:hover {
+    cursor: pointer;
+    filter: invert(0.2);
+}
+
+h1 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 64px;
+    letter-spacing: 5px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.d-none {
+    display: none !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.bg-position {
+    background-position: 60% 0%;
+}
+
+.justify-content-start {
+    justify-content: start;
+}
+
+.panel {
+    display: none;
+    z-index: 11;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    width: auto;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+}
+
+.panel-group {
+    display: flex;
+}
+
+.btn-walk-left {
+    background-color: transparent;
+    border: 2px solid white;
+    background-color: #f3a933;
+    border-radius: 15px;
+    padding: 6px 8px;
+    margin-right: 40px;
+    height: 35px;
+    width: 70px;
+}
+
+.btn-walk-left img {
+    width: 20px;
+    margin-right: 1px;
+}
+
+.btn-walk-right {
+    background-color: transparent;
+    border: 2px solid white;
+    background-color: #f3a933;
+    border-radius: 15px;
+    padding: 6px 8px;
+    height: 35px;
+    width: 70px;
+}
+
+.btn-walk-right img {
+    width: 20px;
+    margin-left: 2px;
+}
+
+.btn-jump {
+    background-color: transparent;
+    border: 2px solid white;
+    background-color: #f3a933;
+    border-radius: 15px;
+    padding: 6px 8px;
+    height: 35px;
+    width: 70px;
+    margin-right: 40px;
+}
+
+.btn-jump img {
+    width: 20px;
+}
+
+.btn-throw {
+    background-color: transparent;
+    border: 2px solid white;
+    background-color: #f3a933;
+    border-radius: 15px;
+    padding: 5px 5px;
+    height: 35px;
+    width: 70px;
+}
+
+.btn-throw img {
+    padding-top: 1px;
+    height: 20px;
+    width: 20px;
+    filter: invert(1);
+}
+
+
+.overlay-grey {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.rotate-device {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    text-align: center;
+    font-size: 50px;
+    letter-spacing: 5px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 200px;
+}
+
+.rotate-device img {
+    width: 95%;
+    height: 30%;
+    margin-bottom: 10px;
+}
+
+
+@font-face {
+    font-family: 'zabras';
+    src: url('fonts/zabars.ttf') format('truetype');
+}
+
+.legal-notice {
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
+    font-size: 15px;
+    color: lightgrey;
+    font-family: 'Bree Serif';
+}
+
+.legal-notice:hover {
+    cursor: pointer;
+    color: rgb(231, 226, 226);
+}
+
+
+/****Smartphones*****/
+
+@media only screen and (max-width: 1600px) {
+    .legal-notice {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    canvas {
+        width: 100%;
+    }
+
+    .container-canvas {
+        width: 100%;
+    }
+
+    .key-description {
+        width: 600px;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    .btn-sound-on {
+        top: 5px;
+        bottom: auto;
+        right: 50px;
+    }
+
+    .btn-sound-off {
+        top: 5px;
+        bottom: auto;
+        right: 50px;
+    }
+
+    .btn-full-screen {
+        top: 7px;
+        bottom: auto;
+        right: 20px;
+    }
+
+    .btn-close-full-screen {
+        top: 7px;
+        bottom: auto;
+        right: 20px;
+    }
+
+    .panel {
+        display: flex;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .key-description {
+        display: none;
+    }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .btn-start-game {
+        font-size: 16px;
+    }
+
+    .rotate-device {
+        font-size: 35px;
+    }
+}
+
+
+@media only screen and (max-width: 500px) {
+    .btn-start-game {
+        font-size: 12px;
+    }
+}
+
+
+@media only screen and (max-height: 600px) {
+    .main-container {
+        margin-bottom: 0;
+    }
+
+    canvas {
+        height: 100vh;
+    }
+
+    .container-canvas {
+        height: 100vh;
+    }
+
+    .key-description {
+        display: none;
+    }
+
+    h1 {
+        display: none;
+    }
+
+    .panel {
+        display: flex;
+    }
+}
+
+@media only screen and (max-height: 600px) {
+    .panel {
+        display: flex;
+    }
+
 }

@@ -1,69 +1,38 @@
-const level1 = new Level(
-    [
+let level1;
+
+function createLevel() {
+    let enemies = [
         new Endboss(),
         new Snake(),
         new Snake(),
         new Snake(),
         new Orc(),
+    ];
 
-    ],
+    let clouds = [];
+    for (let i = 0; i < 5; i++) {
+        clouds.push(new Cloud(i * 720, -100));
+    }
 
-    [
-        new Cloud(0, -100),
-        new Cloud(720, -100), // Second cloud at a different position
-        new Cloud(1440, -100), // Second cloud at a different position
-        new Cloud(2160, -100), // Second cloud at a different position
-        new Cloud(2880, -100), // Second cloud at a different position
-    ],
+    let backgroundObjects = [];
+    let cloudImage = 'img/5_background/layers/3_third_layer/clouds2.png';
+    let rockImage = 'img/5_background/layers/3_third_layer/rocks2.png';
+    let rockImage2 = 'img/5_background/layers/2_second_layer/rocks3.png';
+    let groundImage = 'img/5_background/layers/1_first_layer/02_ground.png';
 
-    [
-        new BackgroundObject('img/5_background/layers/3_third_layer/clouds2.png', -64, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/clouds2.png', 656, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/clouds2.png', 1376, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/clouds2.png', 2096, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/rocks2.png', -64, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/rocks2.png', 656, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/rocks2.png', 1376, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/3_third_layer/rocks2.png', 2096, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/2_second_layer/rocks3.png', -64, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/2_second_layer/rocks3.png', 656, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/2_second_layer/rocks3.png', 1376, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/2_second_layer/rocks3.png', 2096, 0, 720, 480),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', -64, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 0, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 64, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 128, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 192, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 256, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 320, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 384, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 448, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 512, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 576, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 640, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 704, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 768, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 832, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 896, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 960, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1024, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1088, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1152, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1216, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1280, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1344, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1408, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1472, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1536, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1600, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1664, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1728, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1792, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1856, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1920, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 1984, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 2048, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 2112, 414, 64, 64),
-        new BackgroundObject('img/5_background/layers/1_first_layer/02_ground.png', 2176, 414, 64, 64)
-    ]
-);
+    for (let i = 0; i < 4; i++) {
+        backgroundObjects.push(new BackgroundObject(cloudImage, i * 720 - 64, 0, 720, 480));
+        backgroundObjects.push(new BackgroundObject(rockImage, i * 720 - 64, 0, 720, 480));
+        backgroundObjects.push(new BackgroundObject(rockImage2, i * 720 - 64, 0, 720, 480));
+    }
+
+    for (let i = -1; i < 34; i++) {
+        backgroundObjects.push(new BackgroundObject(groundImage, i * 64, 414, 64, 64));
+    }
+
+    level1 = new Level(enemies, clouds, backgroundObjects);
+}
+
+function initLevel() {
+    createLevel();
+}

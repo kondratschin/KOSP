@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Description of the page for SEO">
+    <link rel="shortcut icon" href="favicon.jpeg" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-objects.class.js"></script>
@@ -35,8 +36,90 @@
 <body onload="init()">
 
         <h1>KOSP</h1>
+
+        <div class="key-description">
+            <div class="key">
+                <img src="img/10_icons/left.png">
+                <span class="key-text">WALK LEFT</span>
+            </div>
+            <div class="key">
+                <img src="img/10_icons/right.png">
+                <span class="key-text">WALK RIGHT</span>
+            </div>
+            <div class="key">
+                <img src="img/10_icons/space.png">
+                <span class="key-text">JUMP</span>
+            </div>
+            <div class="key" style="margin-top: 1px;">
+                <span class="D">D</span>
+                <span class="key-text">FIRE</span>
+            </div>
+        </div>
+
+        <div class="container-canvas" id="container-canvas">
+
         <canvas id="canvas" width="720px" height="480px"></canvas>
 
+        <img class="start-screen" id="start-screen" src="img/9_intro_outro_screens/start/startscreen_1.png">
+        <img class="game-over-screen" id="game-over-screen" src="img/9_intro_outro_screens/game_over/oh no you lost!.png">
+        <img class="game-over-screen" id="win-screen" src="img/9_intro_outro_screens/game_over/game over!.png">
+
+        <button onclick="startGame()" id="btn-start-game" class="btn-start-game">START GAME</button>
+
+        <button onclick="soundOff()" class="btn-sound-on" id="btn-sound-on">
+            <img src="img/10_icons/sound_on.png">
+        </button>
+
+        <button onclick="soundOn()" class="btn-sound-off" id="btn-sound-off">
+            <img src="img/10_icons/sound_off.png">
+        </button>
+
+        <button onclick="enterFullscreen()" class="btn-full-screen" id="btn-full-screen">
+            <img src="img/10_icons/fullscreen1.png">
+        </button>
+
+        <button onclick="closeFullscreen()" class="btn-close-full-screen" id="btn-close-full-screen">
+            <img src="img/10_icons/close_fullscreen1.png">
+        </button>
+
+        <div class="panel" id="panel">
+            <div class="panel-group">
+                <div>
+                    <button class="btn-walk-left" id="btn-walk-left">
+                        <img src="img/10_icons/walk_left.png">
+                    </button>
+                </div>
+                <div>
+                    <button class="btn-walk-right" id="btn-walk-right">
+                        <img src="img/10_icons/walk_right.png">
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-group">
+                <div>
+                    <button class="btn-jump" id="btn-jump">
+                        <img src="img/10_icons/up.png">
+                    </button>
+                </div>
+                <div>
+                    <button class="btn-throw" id="btn-throw">
+                        <img src="img/10_icons/fire-solid.svg">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="overlay-grey" class="overlay-grey"></div>
+    </div>
+</div>
+
+<div class="rotate-device" id="rotate-device">
+    <img src="img/9_intro_outro_screens/start/startscreen_1.png">
+    <span>PLEASE ROTATE YOUR DEVICE TO PLAY</span>
+</div>
+
+<a href="legal-notice.html"><div class="legal-notice">Legal Notice</div></a> 
 </body>
 
 </html>

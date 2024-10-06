@@ -7,9 +7,6 @@ let gameStarted = false;
 let soundMute = false;
 
 function init() {
-    canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
-    console.log('my character is', world.character);
     // checkDeviceMode();
     startGameWithEnter();
 }
@@ -33,6 +30,9 @@ window.addEventListener('keydown', (e) => {
             break;
         case 68:
             keyboard.D = true;
+            break;
+        case 13:
+            keyboard.ENTER = true;
             break;
     }
     console.log('key pressed', e);
@@ -58,11 +58,14 @@ window.addEventListener('keyup', (e) => {
         case 68:
             keyboard.D = false;
             break;
+        case 13:
+            keyboard.ENTER = false;
+            break;
     }
 });
 
 function enterFullscreen() {
-    let element = document.getElementById('canvas');
+    let element = document.getElementById('container-canvas');
     if (element.requestFullscreen) {
         element.requestFullscreen();
     } else if (element.msRequestFullscreen) {

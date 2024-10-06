@@ -112,6 +112,9 @@ class Character extends MovableObject {
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 this.stopAllIntervalsAndTimers();
+                setTimeout(() => {
+                    this.removeCorpse = true;
+                }, 1000);
                 return;
             }
     
@@ -142,6 +145,7 @@ class Character extends MovableObject {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
+                
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else {
