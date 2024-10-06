@@ -5,6 +5,7 @@ let intervalIds = [];
 let fullScreen = false;
 let gameStarted = false;
 let soundMute = false;
+let soundButtonMute = false;
 let game_music = new Audio('audio/background.mp3');
 let game_over_sound = new Audio('audio/background.mp3');
 let game_win_sound = new Audio('audio/background.mp3');
@@ -83,10 +84,18 @@ function enterFullscreen() {
 
 function startGame() {
     initLevel();
+    soundMute = true;
+
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
     gameStarted = true;
     closeStartScreen();
+    if (!soundButtonMute) {
+    setTimeout(() => {
+        soundMute = false;
+    }, 500);
+}
+
 }
 
 function closeStartScreen() {
@@ -185,6 +194,7 @@ function soundOn() {
     document.getElementById('btn-sound-off').classList.remove('d-flex');
     game_music.play();
     soundMute = false;
+    soundButtonMute = false;
 }
 
 function soundOff() {
@@ -192,6 +202,7 @@ function soundOff() {
     document.getElementById('btn-sound-off').classList.add('d-flex');
     game_music.pause();
     soundMute = true;
+    soundButtonMute = true;
 }
 
 function clearAllIntervals() {

@@ -1,4 +1,5 @@
 class World {
+    fireSound = new Audio('audio/fire.mp3');
     character = new Character();
     level = level1;
     enemies = level1.enemies;

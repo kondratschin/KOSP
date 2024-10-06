@@ -12,7 +12,9 @@ class FlyingObject extends MovableObject {
 
 
     fire(x, y, direction) {
+        if (!soundMute) {
         this.fireSound.play();
+        }
         if (direction === "front") {
             this.x = x;
             this.y = y;
