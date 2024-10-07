@@ -1,3 +1,6 @@
+/**
+ * Class representing the game world.
+ */
 class World {
     // Sound effects
     fireSound = new Audio('audio/fire.mp3');
@@ -47,6 +50,11 @@ class World {
     knightDamage = 10;
     fireDamage = 5;
 
+    /**
+     * Create a new game world.
+     * @param {HTMLCanvasElement} canvas - The canvas element.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -61,10 +69,16 @@ class World {
         this.initialCoinsAmount = this.coins.length;
     }
 
+    /**
+     * Set the world reference for the character.
+     */
     setWorld() {
         this.character.world = this;
     }
 
+    /**
+     * Run the game loop.
+     */
     run() {
         setInterval(() => {
             this.checkCollisions();
@@ -74,12 +88,18 @@ class World {
         }, 1000 / 60);
     }
 
+    /**
+     * Set the interval for checking flying objects.
+     */
     shootInterval() {
         setInterval(() => {
             this.checkFlyingObjects();
         }, 1000 / 10);
     }
 
+    /**
+     * Check and handle flying objects.
+     */
     checkFlyingObjects() {
         if (this.keyboard.D && this.character.collectedBottles > 0) {
             this.character.collectedBottles -= 1;
@@ -93,6 +113,9 @@ class World {
         }
     }
 
+    /**
+     * Create coins at predefined positions.
+     */
     createCoins() {
         const coinPositions = [
             { x: 305, y: 240 },
@@ -111,6 +134,9 @@ class World {
         });
     }
 
+    /**
+     * Check the character's position to spawn enemies.
+     */
     checkCharacterPositionForEnemies() {
         if (this.character.x === 800 && !this.enemiesSpawned) {
             this.enemiesSpawned = true;
@@ -127,6 +153,9 @@ class World {
         }
     }
 
+    /**
+     * Create mana bottles at predefined positions.
+     */
     createMana() {
         const manaPositions = [
             { x: 605, y: 240 },
@@ -147,7 +176,20 @@ class World {
         });
     }
 
+    /**
+     * Check all types of collisions.
+     */
     checkCollisions() {
+        this.checkEnemyCollisions();
+        this.checkCoinCollisions();
+        this.checkManaCollisions();
+        this.checkFlyingObjectCollisions();
+    }
+
+    /**
+     * Check collisions between the character and enemies.
+     */
+    checkEnemyCollisions() {
         this.enemies.forEach(enemy => {
             const characterFrame = this.character.getFrameCoordinates();
             const enemyFrame = enemy.getFrameCoordinates();
@@ -166,7 +208,12 @@ class World {
                 }
             }
         });
+    }
 
+    /**
+     * Check collisions between the character and coins.
+     */
+    checkCoinCollisions() {
         this.coins.forEach(coin => {
             const characterFrame = this.character.getFrameCoordinates();
             const coinFrame = coin.getFrameCoordinates();
@@ -180,7 +227,12 @@ class World {
                 this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
             }
         });
+    }
 
+    /**
+     * Check collisions between the character and mana bottles.
+     */
+    checkManaCollisions() {
         this.manaBottles.forEach(mana => {
             const characterFrame = this.character.getFrameCoordinates();
             const manaFrame = mana.getFrameCoordinates();
@@ -194,7 +246,12 @@ class World {
                 this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
             }
         });
+    }
 
+    /**
+     * Check collisions between flying objects and enemies.
+     */
+    checkFlyingObjectCollisions() {
         this.flyingObjects.forEach(flyingObject => {
             const flyingObjectFrame = flyingObject.getFrameCoordinates();
 
@@ -214,15 +271,27 @@ class World {
         });
     }
 
+    /**
+     * Check if two frames are colliding.
+     * @param {Object} frame1 - The first frame.
+     * @param {Object} frame2 - The second frame.
+     * @returns {boolean} - True if the frames are colliding, false otherwise.
+     */
     isColliding(frame1, frame2) {
         return (
             frame1.x < frame2.x + frame2.width &&
             frame1.x + frame1.width > frame2.x &&
             frame1.y < frame2.y + frame2.height &&
-            frame1.y + frame1.height > frame2.y
+            frame1.y + frame2.height > frame2.y
         );
     }
 
+    /**
+     * Check if a jump attack is occurring.
+     * @param {Object} characterFrame - The character's frame.
+     * @param {Object} enemyFrame - The enemy's frame.
+     * @returns {boolean} - True if a jump attack is occurring, false otherwise.
+     */
     jumpAttack(characterFrame, enemyFrame) {
         return (
             characterFrame.y + characterFrame.height > enemyFrame.y &&
@@ -232,23 +301,63 @@ class World {
         );
     }
 
+    /**
+     * Set a fixed background image.
+     * @param {string} imagePath - The path to the background image.
+     * @param {number} x - The x-coordinate of the background.
+     * @param {number} y - The y-coordinate of the background.
+     * @param {number} width - The width of the background.
+     * @param {number} height - The height of the background.
+     */
     setFixedBackground(imagePath, x, y, width, height) {
         this.background = new BackgroundObject(imagePath, x, y, width, height);
     }
 
+    /**
+     * Draw the game world.
+     */
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        if (this.background) {
-            this.background.draw(this.ctx); // Draw the fixed background first
-        }
+        this.clearCanvas();
+        this.drawBackground();
         this.ctx.translate(this.camera_x, 0);
+        this.drawGameElements();
+        this.ctx.translate(-this.camera_x, 0);
+        this.drawGUIElements();
+        this.ctx.translate(this.camera_x, 0);
+        this.drawCharacterAndEnemies();
+        this.ctx.translate(-this.camera_x, 0);
+        requestAnimationFrame(() => this.draw());
+    }
 
+    /**
+     * Clear the canvas.
+     */
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * Draw the background.
+     */
+    drawBackground() {
+        if (this.background) {
+            this.background.draw(this.ctx);
+        }
+    }
+
+    /**
+     * Draw game elements.
+     */
+    drawGameElements() {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.coins);
         this.addObjectsToMap(this.manaBottles);
-        this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
+    }
 
-        // Draw GUI elements
+    /**
+     * Draw GUI elements.
+     */
+    drawGUIElements() {
         this.addToMap(this.guiFrame);
         this.addToMap(this.characterGUI);
         this.addToMap(this.goldGUI);
@@ -260,7 +369,15 @@ class World {
             this.addToMap(this.statusBarRightCorner);
         }
         this.addToMap(this.statusBarSetPercentage);
+        this.drawBossGUI();
+        this.drawMagicBar();
+        this.drawGoldBar();
+    }
 
+    /**
+     * Draw the boss GUI elements.
+     */
+    drawBossGUI() {
         if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.firstContact)) {
             this.addToMap(this.BossGUI);
             this.addToMap(this.bossImage);
@@ -272,7 +389,12 @@ class World {
                 this.addToMap(this.statusBarBossLeftCorner);
             }
         }
+    }
 
+    /**
+     * Draw the magic bar elements.
+     */
+    drawMagicBar() {
         if (this.character.collectedBottles > 0) {
             this.addToMap(this.magicBarLeftCorner);
         }
@@ -280,7 +402,12 @@ class World {
             this.addToMap(this.magicBarRightCorner);
         }
         this.addToMap(this.magicBarSetPercentage);
+    }
 
+    /**
+     * Draw the gold bar elements.
+     */
+    drawGoldBar() {
         if (this.character.collectedCoins > 0) {
             this.addToMap(this.goldBarLeftCorner);
         }
@@ -288,26 +415,32 @@ class World {
         if (this.character.collectedCoins === this.initialCoinsAmount) {
             this.addToMap(this.goldBarRightCorner);
         }
+    }
 
-        this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
-
-        // Draw game elements
+    /**
+     * Draw the character and enemies.
+     */
+    drawCharacterAndEnemies() {
         this.addObjectsToMap(this.level.clouds);
         if (!this.character.removeCorpse) {
             this.addToMap(this.character);
         }
         this.addObjectsToMap(this.level.enemies.filter(enemy => !enemy.removeCorpse));
         this.addObjectsToMap(this.flyingObjects);
-        this.ctx.translate(-this.camera_x, 0);
-
-        // Continuously call draw
-        requestAnimationFrame(() => this.draw());
     }
 
+    /**
+     * Add multiple objects to the map.
+     * @param {Array} objects - The objects to add.
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => this.addToMap(o));
     }
 
+    /**
+     * Add a single object to the map.
+     * @param {MovableObject} mo - The object to add.
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -318,6 +451,10 @@ class World {
         }
     }
 
+    /**
+     * Flip an image horizontally.
+     * @param {MovableObject} mo - The object to flip.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.x + mo.width - 35, mo.y);
@@ -326,12 +463,18 @@ class World {
         this.ctx.restore();
     }
 
+    /**
+     * Check if the game is over.
+     */
     checkGameOver() {
         if (this.character.gameOver) {
             gameOver();
         }
     }
 
+    /**
+     * Check if the game is won.
+     */
     checkWinGame() {
         if (world.enemies[0].endBossDead) {
             winGame();
