@@ -1,6 +1,3 @@
-/**
- * Class representing the game world.
- */
 class World {
     // Sound effects
     fireSound = new Audio('audio/fire.mp3');
@@ -50,11 +47,6 @@ class World {
     knightDamage = 10;
     fireDamage = 5;
 
-    /**
-     * Create a new game world.
-     * @param {HTMLCanvasElement} canvas - The canvas element.
-     * @param {Keyboard} keyboard - The keyboard input handler.
-     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -78,6 +70,8 @@ class World {
 
     /**
      * Run the game loop.
+     * This method sets up an interval to repeatedly check for collisions,
+     * character position relative to enemies, game over condition, and win condition.
      */
     run() {
         setInterval(() => {
@@ -85,36 +79,45 @@ class World {
             this.checkCharacterPositionForEnemies();
             this.checkGameOver();
             this.checkWinGame();
-        }, 1000 / 60);
+        }, 1000 / 60); // 60 times per second
     }
 
     /**
      * Set the interval for checking flying objects.
+     * This method sets up an interval to repeatedly check the status of flying objects.
      */
     shootInterval() {
         setInterval(() => {
             this.checkFlyingObjects();
-        }, 1000 / 10);
+        }, 1000 / 10); // 10 times per second
     }
 
     /**
-     * Check and handle flying objects.
+     * Check and handle the creation of flying objects (e.g., fireballs).
+     * If the 'D' key is pressed and the character has collected bottles,
+     * a new flying object is created and added to the flyingObjects array.
      */
     checkFlyingObjects() {
         if (this.keyboard.D && this.character.collectedBottles > 0) {
+            // Decrease the number of collected bottles
             this.character.collectedBottles -= 1;
+            // Update the magic bar percentage
             this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
+
+            // Create a new flying object (fireball)
             let fire = new FlyingObject(
                 this.character.otherDirection ? this.character.x - 22 : this.character.x + 22,
                 this.character.y,
                 this.character.otherDirection ? 'back' : 'front'
             );
+
+            // Add the new flying object to the array
             this.flyingObjects.push(fire);
         }
     }
 
     /**
-     * Create coins at predefined positions.
+     * Create coins at predefined positions and add them to the coins array.
      */
     createCoins() {
         const coinPositions = [
@@ -128,6 +131,7 @@ class World {
             { x: 1300, y: 250 }
         ];
 
+        // Create and add coins to the coins array based on predefined positions
         coinPositions.forEach(position => {
             let coin = new Coins(position.x, position.y);
             this.coins.push(coin);
@@ -136,17 +140,21 @@ class World {
 
     /**
      * Check the character's position to spawn enemies.
+     * If the character reaches a specific position (x = 800) and enemies have not been spawned yet,
+     * spawn a set of enemies (snakes and an orc) at random positions.
      */
     checkCharacterPositionForEnemies() {
         if (this.character.x === 800 && !this.enemiesSpawned) {
             this.enemiesSpawned = true;
 
+            // Spawn 3 snakes at random positions
             for (let i = 0; i < 3; i++) {
                 let snake = new Snake();
                 snake.x = 1300 + Math.random() * 500;
                 this.enemies.push(snake);
             }
 
+            // Spawn an orc at a random position
             let orc = new Orc();
             orc.x = 1300 + Math.random() * 500;
             this.enemies.push(orc);
@@ -154,7 +162,7 @@ class World {
     }
 
     /**
-     * Create mana bottles at predefined positions.
+     * Create mana bottles at predefined positions and add them to the manaBottles array.
      */
     createMana() {
         const manaPositions = [
@@ -170,6 +178,7 @@ class World {
             { x: 1550, y: 400 }
         ];
 
+        // Create and add mana bottles to the manaBottles array based on predefined positions
         manaPositions.forEach(position => {
             let mana = new Mana(position.x, position.y);
             this.manaBottles.push(mana);
@@ -178,6 +187,7 @@ class World {
 
     /**
      * Check all types of collisions.
+     * This method calls specific collision-checking methods for enemies, coins, mana bottles, and flying objects.
      */
     checkCollisions() {
         this.checkEnemyCollisions();
@@ -188,6 +198,7 @@ class World {
 
     /**
      * Check collisions between the character and enemies.
+     * If a collision is detected, handle the collision based on the type of enemy and the character's state.
      */
     checkEnemyCollisions() {
         this.enemies.forEach(enemy => {
@@ -195,11 +206,13 @@ class World {
             const enemyFrame = enemy.getFrameCoordinates();
 
             if (characterFrame && enemyFrame) {
+                // Check for jump attack
                 if (this.character.speedY > 0 && !(enemy instanceof Endboss) && this.jumpAttack(characterFrame, enemyFrame)) {
                     enemy.hit(this.knightDamage);
                     enemy.energy = Math.min(enemy.energy, 0);
                 }
 
+                // Check for regular collision
                 if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
                     let damage = enemy instanceof Endboss ? this.endBossDamage : this.enemyDamage;
                     this.character.hit(damage);
@@ -212,6 +225,9 @@ class World {
 
     /**
      * Check collisions between the character and coins.
+     * If a collision is detected, play the coin sound (if not muted),
+     * remove the coin from the coins array, increment the character's collected coins,
+     * and update the gold bar percentage.
      */
     checkCoinCollisions() {
         this.coins.forEach(coin => {
@@ -222,8 +238,11 @@ class World {
                 if (!soundMute) {
                     this.coinSound.play();
                 }
+                // Remove the collected coin from the array
                 this.coins = this.coins.filter(c => c !== coin);
+                // Increment the collected coins count
                 this.character.collectedCoins += 1;
+                // Update the gold bar percentage
                 this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
             }
         });
@@ -231,6 +250,9 @@ class World {
 
     /**
      * Check collisions between the character and mana bottles.
+     * If a collision is detected, play the potion sound (if not muted),
+     * remove the mana bottle from the manaBottles array, increment the character's collected bottles,
+     * and update the magic bar percentage.
      */
     checkManaCollisions() {
         this.manaBottles.forEach(mana => {
@@ -241,15 +263,19 @@ class World {
                 if (!soundMute) {
                     this.potionSound.play();
                 }
+                // Remove the collected mana bottle from the array
                 this.manaBottles = this.manaBottles.filter(m => m !== mana);
+                // Increment the collected bottles count
                 this.character.collectedBottles += 1;
+                // Update the magic bar percentage
                 this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
             }
         });
     }
 
     /**
-     * Check collisions between flying objects and enemies.
+     * Check collisions between flying objects (e.g., fireballs) and enemies.
+     * If a collision is detected, apply damage to the enemy and update the boss status bar if applicable.
      */
     checkFlyingObjectCollisions() {
         this.flyingObjects.forEach(flyingObject => {
@@ -259,10 +285,12 @@ class World {
                 const enemyFrame = enemy.getFrameCoordinates();
 
                 if (flyingObjectFrame && enemyFrame && !enemy.isHurt() && this.isColliding(flyingObjectFrame, enemyFrame)) {
+                    // Apply damage to the enemy
                     enemy.hit(this.fireDamage);
                     if (!(enemy instanceof Endboss)) {
                         enemy.energy = Math.min(enemy.energy, 1);
                     }
+                    // Update the boss status bar if the enemy is an Endboss
                     if (enemy instanceof Endboss) {
                         this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
                     }
@@ -282,7 +310,7 @@ class World {
             frame1.x < frame2.x + frame2.width &&
             frame1.x + frame1.width > frame2.x &&
             frame1.y < frame2.y + frame2.height &&
-            frame1.y + frame2.height > frame2.y
+            frame1.y + frame1.height > frame2.y
         );
     }
 
@@ -314,8 +342,10 @@ class World {
     }
 
     /**
-     * Draw the game world.
-     */
+    * Draw the game world.
+    * This method clears the canvas, draws the background, game elements, GUI elements,
+    * and the character and enemies, and then requests the next animation frame.
+    */
     draw() {
         this.clearCanvas();
         this.drawBackground();
@@ -330,15 +360,17 @@ class World {
     }
 
     /**
-     * Clear the canvas.
-     */
+    * Clear the canvas.
+    * This method clears the entire canvas, preparing it for the next frame.
+    */
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**
-     * Draw the background.
-     */
+    * Draw the background.
+    * If a background is set, draw it on the canvas.
+    */
     drawBackground() {
         if (this.background) {
             this.background.draw(this.ctx);
@@ -346,17 +378,15 @@ class World {
     }
 
     /**
-     * Draw game elements.
-     */
+    * Draw game elements.
+    * This method adds various game elements (background objects, coins, mana bottles) to the map.
+    */
     drawGameElements() {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.coins);
         this.addObjectsToMap(this.manaBottles);
     }
 
-    /**
-     * Draw GUI elements.
-     */
     drawGUIElements() {
         this.addToMap(this.guiFrame);
         this.addToMap(this.characterGUI);
@@ -374,9 +404,6 @@ class World {
         this.drawGoldBar();
     }
 
-    /**
-     * Draw the boss GUI elements.
-     */
     drawBossGUI() {
         if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.firstContact)) {
             this.addToMap(this.BossGUI);
@@ -391,9 +418,6 @@ class World {
         }
     }
 
-    /**
-     * Draw the magic bar elements.
-     */
     drawMagicBar() {
         if (this.character.collectedBottles > 0) {
             this.addToMap(this.magicBarLeftCorner);
@@ -404,9 +428,6 @@ class World {
         this.addToMap(this.magicBarSetPercentage);
     }
 
-    /**
-     * Draw the gold bar elements.
-     */
     drawGoldBar() {
         if (this.character.collectedCoins > 0) {
             this.addToMap(this.goldBarLeftCorner);
@@ -417,9 +438,6 @@ class World {
         }
     }
 
-    /**
-     * Draw the character and enemies.
-     */
     drawCharacterAndEnemies() {
         this.addObjectsToMap(this.level.clouds);
         if (!this.character.removeCorpse) {
@@ -465,6 +483,7 @@ class World {
 
     /**
      * Check if the game is over.
+     * If the character's gameOver flag is set, call the gameOver function.
      */
     checkGameOver() {
         if (this.character.gameOver) {
@@ -474,6 +493,7 @@ class World {
 
     /**
      * Check if the game is won.
+     * If the end boss is dead, call the winGame function.
      */
     checkWinGame() {
         if (world.enemies[0].endBossDead) {
