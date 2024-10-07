@@ -135,11 +135,10 @@ function startGameWithEnter() {
     }, 1000 / 25);
 }
 
-// Check if the device is mobile
-let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 // Check the device mode and update the UI accordingly
 function checkDeviceMode() {
+    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     updateDeviceMode();
     window.addEventListener('resize', updateDeviceMode);
 }
@@ -150,7 +149,7 @@ function updateDeviceMode() {
     let mainContainer = document.getElementById('main-container');
     let rotateDevice = document.getElementById('rotate-device');
 
-    if (!isMobile || !gameStarted) {
+    if (!isMobile && !gameStarted) {
         showDesktopMode(panel, mainContainer, rotateDevice);
     } else if (isMobile && window.innerHeight > window.innerWidth) {
         showPortraitMode(panel, mainContainer, rotateDevice);
@@ -166,6 +165,7 @@ function showDesktopMode(panel, mainContainer, rotateDevice) {
     mainContainer.classList.remove('d-none');
     rotateDevice.classList.remove('d-flex');
     document.body.classList.remove('bg-position');
+
 }
 
 // Show portrait mode UI
@@ -175,6 +175,10 @@ function showPortraitMode(panel, mainContainer, rotateDevice) {
     mainContainer.classList.add('d-none');
     rotateDevice.classList.add('d-flex');
     document.body.classList.add('bg-position');
+    if (isMobile) {
+        document.getElementById('game-title-mobile').classList.remove('d-flex');
+        document.getElementById('game-title-mobile').classList.add('d-none');
+    }
 }
 
 // Show landscape mode UI
