@@ -44,7 +44,6 @@ window.addEventListener('keydown', (e) => {
             keyboard.ENTER = true;
             break;
     }
-    console.log('key pressed', e);
 });
 
 // Event listener for keyup events

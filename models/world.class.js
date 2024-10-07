@@ -209,7 +209,6 @@ class World {
                     if (enemy instanceof Endboss) {
                         this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
                     }
-                    console.log(`Enemy energy: ${enemy.energy}`);
                 }
             });
         });
