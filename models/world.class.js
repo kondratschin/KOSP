@@ -1,15 +1,20 @@
 class World {
+    // Sound effects
     fireSound = new Audio('audio/fire.mp3');
+    coinSound = new Audio('audio/coin.mp3');
+    potionSound = new Audio('audio/potion_glass.mp3');
+
+    // Game elements
     character = new Character();
     level = level1;
     enemies = level1.enemies;
     clouds = level1.clouds;
     backgroundObjects = level1.backgroundObjects;
-    canvas;
-    ctx;
-    keyboard;
-    camera_x = 0;
-    background;
+    flyingObjects = [new FlyingObject()];
+    coins = [];
+    manaBottles = [];
+
+    // GUI elements
     statusBarLeftCorner = new StatusBar('leftCorner');
     statusBarSetPercentage = new StatusBar('setPercentage');
     statusBarRightCorner = new StatusBar('rightCorner');
@@ -28,23 +33,21 @@ class World {
     bossImage = new GUI('bossImage');
     goldGUI = new GUI('goldGUI');
     magicGUI = new GUI('magicGUI');
-    flyingObjects = [new FlyingObject()];
-    coins = [];
-    initialCoinsAmount = 0;
-    manaBottles = [];
-    magicBarFullAmount = 10;
 
-    coinSound = new Audio('audio/coin.mp3');
-    potionSound = new Audio('audio/potion_glass.mp3');
+    // Game settings
+    canvas;
+    ctx;
+    keyboard;
+    camera_x = 0;
+    background;
+    initialCoinsAmount = 0;
+    magicBarFullAmount = 10;
     endBossDamage = 50;
     enemyDamage = 5;
     knightDamage = 10;
     fireDamage = 5;
 
-
     constructor(canvas, keyboard) {
-        // this.backgroundSound.volume = 0.055;
-        // this.backgroundSound.play();
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -78,20 +81,17 @@ class World {
     }
 
     checkFlyingObjects() {
-        if(this.keyboard.D && this.character.collectedBottles > 0) {
+        if (this.keyboard.D && this.character.collectedBottles > 0) {
             this.character.collectedBottles -= 1;
             this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
-            if (this.character.otherDirection === true) {
-                let fire = new FlyingObject(this.character.x - 22, this.character.y, 'back');
-                this.flyingObjects.push(fire);
-            } else {
-                let fire = new FlyingObject(this.character.x + 22, this.character.y, 'front');
-                this.flyingObjects.push(fire);
-            }
+            let fire = new FlyingObject(
+                this.character.otherDirection ? this.character.x - 22 : this.character.x + 22,
+                this.character.y,
+                this.character.otherDirection ? 'back' : 'front'
+            );
+            this.flyingObjects.push(fire);
         }
     }
-
-
 
     createCoins() {
         const coinPositions = [
@@ -115,17 +115,11 @@ class World {
         if (this.character.x === 800 && !this.enemiesSpawned) {
             this.enemiesSpawned = true;
 
-            let snake1 = new Snake();
-            snake1.x = 1300 + Math.random() * 500;
-            this.enemies.push(snake1);
-
-            let snake2 = new Snake();
-            snake2.x = 1300 + Math.random() * 500;
-            this.enemies.push(snake2);
-
-            let snake3 = new Snake();
-            snake3.x = 1300 + Math.random() * 500;
-            this.enemies.push(snake3);
+            for (let i = 0; i < 3; i++) {
+                let snake = new Snake();
+                snake.x = 1300 + Math.random() * 500;
+                this.enemies.push(snake);
+            }
 
             let orc = new Orc();
             orc.x = 1300 + Math.random() * 500;
@@ -145,7 +139,6 @@ class World {
             { x: 1200, y: 400 },
             { x: 1500, y: 400 },
             { x: 1550, y: 400 }
-
         ];
 
         manaPositions.forEach(position => {
@@ -158,16 +151,13 @@ class World {
         this.enemies.forEach(enemy => {
             const characterFrame = this.character.getFrameCoordinates();
             const enemyFrame = enemy.getFrameCoordinates();
-    
-            if ((characterFrame && enemyFrame) && this.character.speedY > 0 && !(enemy instanceof Endboss)) {    
-                if (this.jumpAttack(characterFrame, enemyFrame)) {
+
+            if (characterFrame && enemyFrame) {
+                if (this.character.speedY > 0 && !(enemy instanceof Endboss) && this.jumpAttack(characterFrame, enemyFrame)) {
                     enemy.hit(this.knightDamage);
                     enemy.energy = Math.min(enemy.energy, 0);
                 }
-            }
 
-
-            if (characterFrame && enemyFrame) {
                 if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
                     let damage = enemy instanceof Endboss ? this.endBossDamage : this.enemyDamage;
                     this.character.hit(damage);
@@ -176,63 +166,55 @@ class World {
                 }
             }
         });
-    
+
         this.coins.forEach(coin => {
             const characterFrame = this.character.getFrameCoordinates();
             const coinFrame = coin.getFrameCoordinates();
-    
-            if (characterFrame && coinFrame) {
-                if (this.isColliding(characterFrame, coinFrame)) {
-                    if (!soundMute) {
+
+            if (characterFrame && coinFrame && this.isColliding(characterFrame, coinFrame)) {
+                if (!soundMute) {
                     this.coinSound.play();
-                    }
-                    this.coins = this.coins.filter(c => c !== coin);
-                    this.character.collectedCoins += 1; // Increase the coins by 1
-                    this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
                 }
+                this.coins = this.coins.filter(c => c !== coin);
+                this.character.collectedCoins += 1;
+                this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
             }
         });
 
         this.manaBottles.forEach(mana => {
             const characterFrame = this.character.getFrameCoordinates();
             const manaFrame = mana.getFrameCoordinates();
-    
-            if (characterFrame && manaFrame) {
-                if (this.isColliding(characterFrame, manaFrame)) {
-                    if (!soundMute) {
+
+            if (characterFrame && manaFrame && this.isColliding(characterFrame, manaFrame)) {
+                if (!soundMute) {
                     this.potionSound.play();
-                    }
-                    this.manaBottles = this.manaBottles.filter(m => m !== mana);
-                    this.character.collectedBottles += 1; // Increase the magic by 1
-                    this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
                 }
+                this.manaBottles = this.manaBottles.filter(m => m !== mana);
+                this.character.collectedBottles += 1;
+                this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
             }
         });
-    
+
         this.flyingObjects.forEach(flyingObject => {
             const flyingObjectFrame = flyingObject.getFrameCoordinates();
-    
+
             this.enemies.forEach(enemy => {
                 const enemyFrame = enemy.getFrameCoordinates();
-    
-                if (flyingObjectFrame && enemyFrame && !enemy.isHurt()) {
-                    if (this.isColliding(flyingObjectFrame, enemyFrame)) {
-                        enemy.hit(this.fireDamage);
-                        if (!(enemy instanceof Endboss)) {
-                            enemy.energy = Math.min(enemy.energy, 1);
-                        }
-                        if (enemy instanceof Endboss) {
-                            this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
-                        }
-                        console.log(`Enemy energy: ${enemy.energy}`);
+
+                if (flyingObjectFrame && enemyFrame && !enemy.isHurt() && this.isColliding(flyingObjectFrame, enemyFrame)) {
+                    enemy.hit(this.fireDamage);
+                    if (!(enemy instanceof Endboss)) {
+                        enemy.energy = Math.min(enemy.energy, 1);
                     }
+                    if (enemy instanceof Endboss) {
+                        this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
+                    }
+                    console.log(`Enemy energy: ${enemy.energy}`);
                 }
             });
         });
     }
-    
 
-    
     isColliding(frame1, frame2) {
         return (
             frame1.x < frame2.x + frame2.width &&
@@ -266,8 +248,8 @@ class World {
         this.addObjectsToMap(this.coins);
         this.addObjectsToMap(this.manaBottles);
         this.ctx.translate(-this.camera_x, 0); // Reset the camera position backwards
-        // -------- space for fixed objects ----------------
 
+        // Draw GUI elements
         this.addToMap(this.guiFrame);
         this.addToMap(this.characterGUI);
         this.addToMap(this.goldGUI);
@@ -280,30 +262,25 @@ class World {
         }
         this.addToMap(this.statusBarSetPercentage);
 
-
         if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.firstContact)) {
             this.addToMap(this.BossGUI);
             this.addToMap(this.bossImage);
             this.addToMap(this.statusBarBossSetPercentage);
             if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy === world.statusBarBossSetPercentage.energyBoss)) {
-            this.addToMap(this.statusBarBossRightCorner);
+                this.addToMap(this.statusBarBossRightCorner);
             }
             if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy > 0)) {
                 this.addToMap(this.statusBarBossLeftCorner);
-                }
+            }
         }
 
-
-        if (this.character.collectedBottles > 0) {            
+        if (this.character.collectedBottles > 0) {
             this.addToMap(this.magicBarLeftCorner);
-        };
+        }
         if (this.character.collectedBottles >= this.magicBarFullAmount) {
             this.addToMap(this.magicBarRightCorner);
         }
         this.addToMap(this.magicBarSetPercentage);
-
-
-
 
         if (this.character.collectedCoins > 0) {
             this.addToMap(this.goldBarLeftCorner);
@@ -313,15 +290,9 @@ class World {
             this.addToMap(this.goldBarRightCorner);
         }
 
-
         this.ctx.translate(this.camera_x, 0); // Reset the camera position forwards
 
-
-
-
-
-
-        // -------- space for fixed objects ----------------
+        // Draw game elements
         this.addObjectsToMap(this.level.clouds);
         if (!this.character.removeCorpse) {
             this.addToMap(this.character);
@@ -330,17 +301,12 @@ class World {
         this.addObjectsToMap(this.flyingObjects);
         this.ctx.translate(-this.camera_x, 0);
 
-        // draw wird immer wieder aufgerufen
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+        // Continuously call draw
+        requestAnimationFrame(() => this.draw());
     }
 
     addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
+        objects.forEach(o => this.addToMap(o));
     }
 
     addToMap(mo) {
@@ -361,26 +327,15 @@ class World {
         this.ctx.restore();
     }
 
-    /**
-     * Check if the character is game over and the game ends
-     * 
-     */
     checkGameOver() {
         if (this.character.gameOver) {
-
             gameOver();
         }
     }
 
-        /**
-     * Check if the endboss is dead and the game was won
-     * 
-     */
-        checkWinGame() {
-            if (world.enemies[0].endBossDead) {
-                // this.endboss.endboss_music.pause();
-                winGame();
-            }
+    checkWinGame() {
+        if (world.enemies[0].endBossDead) {
+            winGame();
         }
-
+    }
 }
