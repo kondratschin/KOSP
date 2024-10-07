@@ -396,12 +396,29 @@ h1 {
     letter-spacing: 5px;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
     margin-bottom: 200px;
+    color: white;
 }
 
+
+.game-title-mobile {
+    display: none;
+    z-index: 999;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    -webkit-text-stroke: 1px black;
+}
+
+
 .rotate-device img {
-    width: 95%;
-    height: 30%;
+    width: 88%;
+    height: 56%;
     margin-bottom: 10px;
+
 }
 
 

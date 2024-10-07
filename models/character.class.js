@@ -155,6 +155,9 @@ class Character extends MovableObject {
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 
             } else if (this.isHurt()) {
+                if (!soundMute) {
+                    this.dying_sound.play();
+                }
                 this.playAnimation(this.IMAGES_HURT);
             } else {
                 if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {

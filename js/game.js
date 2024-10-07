@@ -11,9 +11,10 @@ let game_over_sound = new Audio('audio/gameover.mp3');
 let game_win_sound = new Audio('audio/gamewon.mp3');
 
 function init() {
-    // checkDeviceMode();
+    checkDeviceMode();
     soundMute = true;
     game_music.pause();
+    document.getElementById('game-title-mobile').classList.remove('d-none');
     startGameWithEnter();
 }
 
@@ -96,7 +97,9 @@ function startGame() {
     if (!soundButtonMute) {
     setTimeout(() => {
         soundMute = false;
+        document.getElementById('game-title-mobile').classList.remove('d-flex');
         document.getElementById('game-title-mobile').classList.add('d-none');
+
     }, 500);
 
 }
@@ -110,8 +113,8 @@ function closeStartScreen() {
         if (!soundMute && !soundButtonMute) {
             soundOn();
         }
-        // keyboard.buttonKeyPressEvents();
-        // keyboard.buttonKeyPressEventsUndo();
+        keyboard.buttonKeyPressEvents();
+        keyboard.buttonKeyPressEventsUndo();
     }, 1000);
 }
 
@@ -124,17 +127,35 @@ function startGameWithEnter() {
 }
 
 function checkDeviceMode() {
-    setInterval(() => {
-        if (window.innerHeight > window.innerWidth) {
-            document.getElementById('main-container').classList.add('d-none');
-            document.getElementById('rotate-device').classList.add('d-flex');
+    const updateDeviceMode = () => {
+        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        let panel = document.getElementById('panel');
+        let mainContainer = document.getElementById('main-container');
+        let rotateDevice = document.getElementById('rotate-device');
+
+        if (isMobile && window.innerHeight > window.innerWidth) {
+            panel.classList.remove('d-none');
+            panel.classList.add('d-flex');
+            mainContainer.classList.add('d-none');
+            rotateDevice.classList.add('d-flex');
             document.body.classList.add('bg-position');
-        } else {
-            document.getElementById('main-container').classList.remove('d-none');
-            document.getElementById('rotate-device').classList.remove('d-flex');
+        } else if (isMobile && window.innerHeight < window.innerWidth) {
+            panel.classList.add('d-flex');
+            panel.classList.remove('d-none');
+            mainContainer.classList.remove('d-none');
+            rotateDevice.classList.remove('d-flex');
             document.body.classList.remove('bg-position');
+            document.getElementById('game-title-mobile').classList.add('d-flex');
+        } else if (!isMobile) {
+            panel.classList.remove('d-flex');
+            panel.classList.add('d-none');
+            mainContainer.classList.remove('d-none');
+            rotateDevice.classList.remove('d-flex');
         }
-    }, 1000 / 25);
+    };
+
+    updateDeviceMode();
+    window.addEventListener('resize', updateDeviceMode);
 }
 
 function checkGameMusic() {
