@@ -1,4 +1,5 @@
 class Keyboard {
+    // Initialize key states
     LEFT = false;
     RIGHT = false;
     UP = false;
@@ -8,46 +9,38 @@ class Keyboard {
     ENTER = false;
 
     /**
-     * Add eventlisteners for the mobile action buttons and set the corresponding variable to true
+     * Add event listeners for the mobile action buttons and set the corresponding variable to true
      */
     buttonKeyPressEvents() {
-        document.getElementById('btn-walk-left').addEventListener('touchstart', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.LEFT = true;
-        });
-        document.getElementById('btn-walk-right').addEventListener('touchstart', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.RIGHT = true;
-        });
-        document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.SPACE = true;
-        });
-        document.getElementById('btn-throw').addEventListener('touchstart', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.D = true;
-        });
+        this.addTouchEvent('btn-walk-left', 'touchstart', () => this.LEFT = true);
+        this.addTouchEvent('btn-walk-right', 'touchstart', () => this.RIGHT = true);
+        this.addTouchEvent('btn-jump', 'touchstart', () => this.SPACE = true);
+        this.addTouchEvent('btn-throw', 'touchstart', () => this.D = true);
     }
 
     /**
      * Set the corresponding variables of the used button to false
      */
     buttonKeyPressEventsUndo() {
-        document.getElementById('btn-walk-left').addEventListener('touchend', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.LEFT = false;
-        });
-        document.getElementById('btn-walk-right').addEventListener('touchend', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.RIGHT = false;
-        });
-        document.getElementById('btn-jump').addEventListener('touchend', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.SPACE = false;
-        });
-        document.getElementById('btn-throw').addEventListener('touchend', (e) => {
-            if (e.cancelable) e.preventDefault();
-            this.D = false;
-        });
+        this.addTouchEvent('btn-walk-left', 'touchend', () => this.LEFT = false);
+        this.addTouchEvent('btn-walk-right', 'touchend', () => this.RIGHT = false);
+        this.addTouchEvent('btn-jump', 'touchend', () => this.SPACE = false);
+        this.addTouchEvent('btn-throw', 'touchend', () => this.D = false);
+    }
+
+    /**
+     * Helper method to add touch event listeners
+     * @param {string} elementId - The ID of the element to attach the event to
+     * @param {string} eventType - The type of the touch event (e.g., 'touchstart', 'touchend')
+     * @param {Function} callback - The callback function to execute on the event
+     */
+    addTouchEvent(elementId, eventType, callback) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.addEventListener(eventType, (e) => {
+                if (e.cancelable) e.preventDefault();
+                callback();
+            });
+        }
     }
 }

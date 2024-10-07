@@ -1,4 +1,5 @@
 class GUI extends DrawableObject {
+    // Array of image paths used in the GUI
     IMAGES = [
         'img/7_statusbars/1_icons/character_info_full.png',
         'img/2_character_knight/1_idle/long_idle/idle1.png',
@@ -6,78 +7,77 @@ class GUI extends DrawableObject {
         'img/7_statusbars/1_icons/icon_magic_attack.png',
         'img/7_statusbars/1_icons/endboss_info_full.png',
         'img/4_enemy_boss/2_idle/Idle1.png'
-
     ];
-
 
     constructor(initMethod = 'GUI') {
         super();
         this.loadImages(this.IMAGES);
-        if (initMethod === 'GUI') {
-            this.guiFrame();
-        }
-        if (initMethod === 'GUIBoss') {
-            this.guiFrameBoss();
-        } else if (initMethod === 'knightGUI') {
-            this.knightGUI();
-        } else if (initMethod === 'goldGUI') {
-            this.goldGUI();
-        } else if (initMethod === 'magicGUI') {
-            this.magicGUI();
-        } else if (initMethod === 'bossImage') {
-            this.bossImage();
+        this.initializeGUI(initMethod);
+    }
+
+    // Initialize the GUI based on the provided method
+    initializeGUI(initMethod) {
+        switch (initMethod) {
+            case 'GUI':
+                this.guiFrame();
+                break;
+            case 'GUIBoss':
+                this.guiFrameBoss();
+                break;
+            case 'knightGUI':
+                this.knightGUI();
+                break;
+            case 'goldGUI':
+                this.goldGUI();
+                break;
+            case 'magicGUI':
+                this.magicGUI();
+                break;
+            case 'bossImage':
+                this.bossImage();
+                break;
+            default:
+                console.warn(`Unknown initMethod: ${initMethod}`);
         }
     }
 
-
+    // Set up the main GUI frame
     guiFrame() {
-        this.img = this.imageCache[this.IMAGES[0]];
-        this.x = 24;
-        this.y = 24;
-        this.width = 202;
-        this.height = 79;
+        this.setImage(this.IMAGES[0], 24, 24, 202, 79);
     }
 
+    // Set up the boss GUI frame
     guiFrameBoss() {
-        this.img = this.imageCache[this.IMAGES[4]];
-        this.x = 496;
-        this.y = 24;
-        this.width = 202;
-        this.height = 79;
+        this.setImage(this.IMAGES[4], 496, 24, 202, 79);
     }
 
+    // Set up the boss image
     bossImage() {
-        this.img = this.imageCache[this.IMAGES[5]];
-        this.x = 612;
-        this.y = -12;
-        this.width = 130;
-        this.height = 130;
+        this.setImage(this.IMAGES[5], 612, -12, 130, 130);
         this.otherDirection = true;
     }
 
+    // Set up the knight GUI
     knightGUI() {
-        this.img = this.imageCache[this.IMAGES[1]];
-        this.x = -22;
-        this.y = -51;
-        this.width = 200;
-        this.height = 200;
+        this.setImage(this.IMAGES[1], -22, -51, 200, 200);
     }
 
+    // Set up the gold GUI
     goldGUI() {
-        this.img = this.imageCache[this.IMAGES[2]];
-        this.x = 202;
-        this.y = 66;
-        this.width = 14;
-        this.height = 14;
+        this.setImage(this.IMAGES[2], 202, 66, 14, 14);
     }
 
+    // Set up the magic GUI
     magicGUI() {
-        this.img = this.imageCache[this.IMAGES[3]];
-        this.x = 203;
-        this.y = 50;
-        this.width = 14;
-        this.height = 14;
+        this.setImage(this.IMAGES[3], 203, 50, 14, 14);
     }
 
-
+    // Helper method to set image properties
+    setImage(imagePath, x, y, width, height) {
+        this.img = this.imageCache[imagePath];
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 }
