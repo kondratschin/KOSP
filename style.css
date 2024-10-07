@@ -95,6 +95,9 @@ canvas {
 canvas {
     display: block;
     background-color: black;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .key-description {
@@ -497,20 +500,7 @@ h1 {
 }
 
 @media only screen and (max-width: 800px) {
-    .key-description {
-        display: none;
-    }
-}
 
-
-@media only screen and (max-width: 600px) {
-    .btn-start-game {
-        font-size: 16px;
-    }
-
-    .game-title {
-        display: none;
-    }
 
     .game-title-mobile {
         z-index: 999;
@@ -524,6 +514,37 @@ h1 {
         text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
         -webkit-text-stroke: 1px black;
     }
+
+    .game-title {
+        display: none;
+    }
+}
+
+
+@media only screen and (max-width: 700px) {
+    .legal-notice {
+        z-index: 999;
+        position: absolute;
+        bottom: 20px;
+        left: 60%;
+        transform: translateX(-50%);
+        font-size: 15px;
+        color: lightgrey;
+        font-family: 'Arial';
+    }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .btn-start-game {
+        font-size: 16px;
+    }
+    .key-description {
+        display: none;
+    }
+
+
+
 
     .rotate-device {
         font-size: 35px;

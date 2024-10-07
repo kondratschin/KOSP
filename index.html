@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<html translate="no">
+<html lang="en" translate="no">
 
 <head>
     <meta charset="UTF-8">
@@ -28,12 +27,12 @@
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
     <script src="levels/level1.js"></script>
-
     <script src="js/game.js"></script>
     <title>KOSP</title>
 </head>
 
 <body onload="init()">
+    <span id="game-title-mobile" class="game-title-mobile">Knights Of Shadow Peaks</span>
     <div class="main-container" id="main-container">
         <h1 class="game-title" style="font-size: 24px;">
             <span style="font-size: 50px;">K</span>nights 
@@ -42,19 +41,17 @@
             <span style="font-size: 50px;">P</span>eaks
         </h1>
 
-        <span id="game-title-mobile" class="game-title-mobile">Knights Of Shadow Peaks</span>
-
         <div class="key-description">
             <div class="key">
-                <img src="img/10_icons/left.png">
+                <img src="img/10_icons/left.png" alt="Walk Left">
                 <span class="key-text">WALK LEFT</span>
             </div>
             <div class="key">
-                <img src="img/10_icons/right.png">
+                <img src="img/10_icons/right.png" alt="Walk Right">
                 <span class="key-text">WALK RIGHT</span>
             </div>
             <div class="key">
-                <img src="img/10_icons/space.png">
+                <img src="img/10_icons/space.png" alt="Jump">
                 <span class="key-text">JUMP</span>
             </div>
             <div class="key" style="margin-top: 1px;">
@@ -64,69 +61,69 @@
         </div>
 
         <div class="container-canvas" id="container-canvas">
+            <canvas id="canvas" width="720px" height="480px"></canvas>
+            <img class="start-screen" id="start-screen" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Screen">
+            <span class="game-over-screen" id="game-over-screen">Game Over!</span>
+            <span class="game-over-screen" id="win-screen">You Win!</span>
 
-        <canvas id="canvas" width="720px" height="480px"></canvas>
+            <button onclick="startGame()" id="btn-start-game" class="btn-start-game">START GAME</button>
 
-        <img class="start-screen" id="start-screen" src="img/9_intro_outro_screens/start/startscreen_1.png">
-        <span class="game-over-screen" id="game-over-screen">Game Over!</span>
-        <span class="game-over-screen" id="win-screen">You Win!</span>
+            <button onclick="soundOff()" class="btn-sound-on" id="btn-sound-on">
+                <img src="img/10_icons/sound_on.png" alt="Sound On">
+            </button>
 
-        <button onclick="startGame()" id="btn-start-game" class="btn-start-game">START GAME</button>
+            <button onclick="soundOn()" class="btn-sound-off" id="btn-sound-off">
+                <img src="img/10_icons/sound_off.png" alt="Sound Off">
+            </button>
 
-        <button onclick="soundOff()" class="btn-sound-on" id="btn-sound-on">
-            <img src="img/10_icons/sound_on.png">
-        </button>
+            <button onclick="enterFullscreen()" class="btn-full-screen" id="btn-full-screen">
+                <img src="img/10_icons/fullscreen1.png" alt="Enter Fullscreen">
+            </button>
 
-        <button onclick="soundOn()" class="btn-sound-off" id="btn-sound-off">
-            <img src="img/10_icons/sound_off.png">
-        </button>
+            <button onclick="closeFullscreen()" class="btn-close-full-screen" id="btn-close-full-screen">
+                <img src="img/10_icons/close_fullscreen1.png" alt="Close Fullscreen">
+            </button>
 
-        <button onclick="enterFullscreen()" class="btn-full-screen" id="btn-full-screen">
-            <img src="img/10_icons/fullscreen1.png">
-        </button>
-
-        <button onclick="closeFullscreen()" class="btn-close-full-screen" id="btn-close-full-screen">
-            <img src="img/10_icons/close_fullscreen1.png">
-        </button>
-
-        <div class="panel" id="panel">
-            <div class="panel-group">
-                <div>
-                    <button class="btn-walk-left" id="btn-walk-left">
-                        <img src="img/10_icons/walk_left.png">
-                    </button>
+            <div class="panel" id="panel">
+                <div class="panel-group">
+                    <div>
+                        <button class="btn-walk-left" id="btn-walk-left">
+                            <img src="img/10_icons/walk_left.png" alt="Walk Left">
+                        </button>
+                    </div>
+                    <div>
+                        <button class="btn-walk-right" id="btn-walk-right">
+                            <img src="img/10_icons/walk_right.png" alt="Walk Right">
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <button class="btn-walk-right" id="btn-walk-right">
-                        <img src="img/10_icons/walk_right.png">
-                    </button>
+
+                <div class="panel-group">
+                    <div>
+                        <button class="btn-jump" id="btn-jump">
+                            <img src="img/10_icons/up.png" alt="Jump">
+                        </button>
+                    </div>
+                    <div>
+                        <button class="btn-throw" id="btn-throw">
+                            <img src="img/10_icons/fire-solid.svg" alt="Throw">
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="panel-group">
-                <div>
-                    <button class="btn-jump" id="btn-jump">
-                        <img src="img/10_icons/up.png">
-                    </button>
-                </div>
-                <div>
-                    <button class="btn-throw" id="btn-throw">
-                        <img src="img/10_icons/fire-solid.svg">
-                    </button>
-                </div>
-            </div>
+            <div id="overlay-grey" class="overlay-grey"></div>
         </div>
-
-        <div id="overlay-grey" class="overlay-grey"></div>
     </div>
-</div>
 
-<div class="rotate-device" id="rotate-device">
-    <img src="img/9_intro_outro_screens/start/startscreen_1.png">
-    <span>PLEASE ROTATE YOUR DEVICE TO PLAY</span>
-</div>
-</div>
-<a href="legal-notice.html"><div class="legal-notice">Legal Notice</div></a> 
+    <div class="rotate-device" id="rotate-device">
+        <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Rotate Device">
+        <span>PLEASE ROTATE YOUR DEVICE TO PLAY</span>
+    </div>
+
+    <a href="legal-notice.html">
+        <div id="legal-notice" class="legal-notice">Legal Notice</div>
+    </a>
 </body>
 
 </html>

@@ -1,9 +1,14 @@
+/**
+ * Class representing a coin in the game.
+ * @extends MovableObject
+ */
 class Coins extends MovableObject {
     y = 314;
     x = 200;
     height = 32;
     width = 32;
 
+    // Array of coin images for animation
     IMAGES_COIN = [
         'img/8_coin/coin1.png',
         'img/8_coin/coin2.png',
@@ -17,6 +22,11 @@ class Coins extends MovableObject {
         'img/8_coin/coin10.png'
     ];
 
+    /**
+     * Create a coin.
+     * @param {number} x - The x-coordinate of the coin.
+     * @param {number} y - The y-coordinate of the coin.
+     */
     constructor(x, y) {
         super().loadImage('img/8_coin/coin1.png');
         this.loadImages(this.IMAGES_COIN);
@@ -25,11 +35,12 @@ class Coins extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Animate the coin by cycling through its images.
+     */
     animate() {
         setInterval(() => {
             this.playAnimation(this.IMAGES_COIN);
         }, 200);
     }
-
-
 }

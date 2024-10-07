@@ -1,8 +1,17 @@
+/**
+ * Class representing a cloud in the game.
+ * @extends MovableObject
+ */
 class Cloud extends MovableObject {
     width = 720;
     height = 480;
     speed = 0.25;
 
+    /**
+     * Create a cloud.
+     * @param {number} x - The x-coordinate of the cloud.
+     * @param {number} y - The y-coordinate of the cloud.
+     */
     constructor(x, y) {
         super().loadImage("img/5_background/layers/2_second_layer/clouds3.png");
         this.x = x;
@@ -10,9 +19,11 @@ class Cloud extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Animate the cloud by moving it to the left.
+     * If the cloud moves completely off the screen, reset its position.
+     */
     animate() {
-
-
         setInterval(() => {
             this.moveLeft();
             this.x -= this.speed;
@@ -23,6 +34,4 @@ class Cloud extends MovableObject {
             }
         }, 1000 / 60);
     }
-
-
 }

@@ -7,18 +7,26 @@ class DrawableObject {
     height = 250;
     width = 250;
 
+    /**
+     * Loads an image from the given path and assigns it to the img property.
+     * @param {string} path - The path to the image file.
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
+    /**
+     * Draws the current image on the given canvas context.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+     */
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
     /**
-     * 
-     * @param {Array} arr 
+     * Loads multiple images from the given array of paths and caches them.
+     * @param {Array<string>} arr - An array of image paths.
      */
     loadImages(arr) {
         arr.forEach((path) => {
@@ -28,6 +36,10 @@ class DrawableObject {
         });
     }
 
+    /**
+     * Draws a frame around the object if certain conditions are met.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+     */
     drawFrame(ctx) {
         const shouldDrawFrame =
             (this instanceof Character) ||
@@ -39,7 +51,6 @@ class DrawableObject {
             (this instanceof FlyingObject);
         const SnakeAlive = !(this instanceof Snake && this.isDead());
         const OrcAlive = !(this instanceof Orc && this.isDead());
-
 
         if (shouldDrawFrame && SnakeAlive && OrcAlive) {
             ctx.beginPath();
@@ -55,4 +66,12 @@ class DrawableObject {
         }
     }
 
+    /**
+     * Placeholder method to get frame coordinates.
+     * Should be implemented in subclasses.
+     */
+    getFrameCoordinates() {
+        // This method should be implemented in subclasses
+        return null;
+    }
 }

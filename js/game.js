@@ -1,3 +1,4 @@
+// Global variables
 let canvas;
 let world;
 let keyboard = new Keyboard();
@@ -10,14 +11,15 @@ let game_music = new Audio('audio/background.mp3');
 let game_over_sound = new Audio('audio/gameover.mp3');
 let game_win_sound = new Audio('audio/gamewon.mp3');
 
+// Initialize the game
 function init() {
     checkDeviceMode();
     soundMute = true;
     game_music.pause();
-    document.getElementById('game-title-mobile').classList.remove('d-none');
     startGameWithEnter();
 }
 
+// Event listener for keydown events
 window.addEventListener('keydown', (e) => {
     switch (e.keyCode) {
         case 39:
@@ -45,6 +47,7 @@ window.addEventListener('keydown', (e) => {
     console.log('key pressed', e);
 });
 
+// Event listener for keyup events
 window.addEventListener('keyup', (e) => {
     switch (e.keyCode) {
         case 39:
@@ -71,6 +74,7 @@ window.addEventListener('keyup', (e) => {
     }
 });
 
+// Enter fullscreen mode
 function enterFullscreen() {
     let element = document.getElementById('container-canvas');
     if (element.requestFullscreen) {
@@ -85,27 +89,32 @@ function enterFullscreen() {
     fullScreen = true;
 }
 
+// Start the game
 function startGame() {
-    initLevel();
+    closeStartScreen();
+    document.getElementById('game-title-mobile').classList.remove('d-flex');
+    document.getElementById('game-title-mobile').classList.add('d-none');
+    document.getElementById('legal-notice').classList.add('d-none');
     soundMute = true;
+
+    initLevel();
 
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
     gameStarted = true;
-    closeStartScreen();
+
+    document.getElementById('game-title-mobile').classList.remove('d-flex');
+    document.getElementById('game-title-mobile').classList.add('d-none');
+    checkDeviceMode();
 
     if (!soundButtonMute) {
-    setTimeout(() => {
-        soundMute = false;
-        document.getElementById('game-title-mobile').classList.remove('d-flex');
-        document.getElementById('game-title-mobile').classList.add('d-none');
-
-    }, 500);
-
+        setTimeout(() => {
+            soundMute = false;
+        }, 500);
+    }
 }
 
-}
-
+// Close the start screen
 function closeStartScreen() {
     setTimeout(() => {
         document.getElementById('start-screen').classList.add('d-none');
@@ -118,6 +127,7 @@ function closeStartScreen() {
     }, 1000);
 }
 
+// Start the game when Enter key is pressed
 function startGameWithEnter() {
     setInterval(() => {
         if (keyboard.ENTER && !gameStarted) {
@@ -126,38 +136,58 @@ function startGameWithEnter() {
     }, 1000 / 25);
 }
 
+// Check if the device is mobile
+let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+// Check the device mode and update the UI accordingly
 function checkDeviceMode() {
-    const updateDeviceMode = () => {
-        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        let panel = document.getElementById('panel');
-        let mainContainer = document.getElementById('main-container');
-        let rotateDevice = document.getElementById('rotate-device');
-
-        if (isMobile && window.innerHeight > window.innerWidth) {
-            panel.classList.remove('d-none');
-            panel.classList.add('d-flex');
-            mainContainer.classList.add('d-none');
-            rotateDevice.classList.add('d-flex');
-            document.body.classList.add('bg-position');
-        } else if (isMobile && window.innerHeight < window.innerWidth) {
-            panel.classList.add('d-flex');
-            panel.classList.remove('d-none');
-            mainContainer.classList.remove('d-none');
-            rotateDevice.classList.remove('d-flex');
-            document.body.classList.remove('bg-position');
-            document.getElementById('game-title-mobile').classList.add('d-flex');
-        } else if (!isMobile) {
-            panel.classList.remove('d-flex');
-            panel.classList.add('d-none');
-            mainContainer.classList.remove('d-none');
-            rotateDevice.classList.remove('d-flex');
-        }
-    };
-
     updateDeviceMode();
     window.addEventListener('resize', updateDeviceMode);
 }
 
+// Update the device mode UI
+function updateDeviceMode() {
+    let panel = document.getElementById('panel');
+    let mainContainer = document.getElementById('main-container');
+    let rotateDevice = document.getElementById('rotate-device');
+
+    if (!isMobile || !gameStarted) {
+        showDesktopMode(panel, mainContainer, rotateDevice);
+    } else if (isMobile && window.innerHeight > window.innerWidth) {
+        showPortraitMode(panel, mainContainer, rotateDevice);
+    } else if (isMobile && window.innerHeight < window.innerWidth) {
+        showLandscapeMode(panel, mainContainer, rotateDevice);
+    }
+}
+
+// Show desktop mode UI
+function showDesktopMode(panel, mainContainer, rotateDevice) {
+    panel.classList.remove('d-flex');
+    panel.classList.add('d-none');
+    mainContainer.classList.remove('d-none');
+    rotateDevice.classList.remove('d-flex');
+    document.body.classList.remove('bg-position');
+}
+
+// Show portrait mode UI
+function showPortraitMode(panel, mainContainer, rotateDevice) {
+    panel.classList.remove('d-none');
+    panel.classList.add('d-flex');
+    mainContainer.classList.add('d-none');
+    rotateDevice.classList.add('d-flex');
+    document.body.classList.add('bg-position');
+}
+
+// Show landscape mode UI
+function showLandscapeMode(panel, mainContainer, rotateDevice) {
+    panel.classList.add('d-flex');
+    panel.classList.remove('d-none');
+    mainContainer.classList.remove('d-none');
+    rotateDevice.classList.remove('d-flex');
+    document.body.classList.remove('bg-position');
+}
+
+// Check if the game music has ended and restart it
 function checkGameMusic() {
     setInterval(() => {
         game_music.addEventListener("ended", function () {
@@ -166,6 +196,7 @@ function checkGameMusic() {
     }, 500);
 }
 
+// Exit fullscreen mode
 function closeFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -177,6 +208,7 @@ function closeFullscreen() {
     fullScreen = false;
 }
 
+// Return to the start screen
 function backToStartScreen() {
     setTimeout(() => {
         document.getElementById('overlay-grey').classList.remove('d-flex');
@@ -184,15 +216,22 @@ function backToStartScreen() {
         document.getElementById('win-screen').classList.remove('d-flex');
         document.getElementById('start-screen').classList.remove('d-none');
         document.getElementById('btn-start-game').classList.remove('d-none');
+        document.getElementById('legal-notice').classList.remove('d-none');
+        if (isMobile) {
+            document.getElementById('game-title-mobile').classList.add('d-flex');
+            document.getElementById('game-title-mobile').classList.remove('d-none');
+        }
     }, 3000);
 }
 
+// Handle game over scenario
 function gameOver() {
     if (!soundMute) {
         game_over_sound.play();
     }
     game_music.pause();
     world.enemies[0].endBossMusic.pause();
+    gameStarted = false;
     clearAllIntervals();
     document.getElementById('overlay-grey').classList.add('d-flex');
     document.getElementById('game-over-screen').classList.add('d-flex');
@@ -200,9 +239,9 @@ function gameOver() {
     backToStartScreen();
     init();
     gameStarted = false;
-
 }
 
+// Handle game win scenario
 function winGame() {
     if (!soundMute && !soundButtonMute) {
         game_win_sound.play();
@@ -216,9 +255,9 @@ function winGame() {
     backToStartScreen();
     init();
     gameStarted = false;
-
 }
 
+// Turn sound on
 function soundOn() {
     document.getElementById('btn-sound-on').classList.remove('d-none');
     document.getElementById('btn-sound-off').classList.remove('d-flex');
@@ -227,6 +266,7 @@ function soundOn() {
     soundButtonMute = false;
 }
 
+// Turn sound off
 function soundOff() {
     document.getElementById('btn-sound-on').classList.add('d-none');
     document.getElementById('btn-sound-off').classList.add('d-flex');
@@ -235,6 +275,7 @@ function soundOff() {
     soundButtonMute = true;
 }
 
+// Clear all intervals
 function clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }

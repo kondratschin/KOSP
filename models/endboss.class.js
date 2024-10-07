@@ -8,8 +8,8 @@ class Endboss extends MovableObject {
     enemyHit = new Audio('audio/enemy_hit.mp3');
     firstContact = null;
     bossNearBy = null;
-    endBossStartDistance = 1500; //1500
-    endBossPosition = 1900;  //1900
+    endBossStartDistance = 1500;
+    endBossPosition = 1900;
     endBossThreat = new Audio('audio/endboss_threat.mp3');
     energy = 20;
     endBossDead = false;
@@ -29,18 +29,15 @@ class Endboss extends MovableObject {
         'img/4_enemy_boss/5_dead/Death3.png',
         'img/4_enemy_boss/5_dead/Death4.png'
     ];
-
     IMAGES_HURT = [
         'img/4_enemy_boss/4_hurt/Hurt1.png',
         'img/4_enemy_boss/4_hurt/Hurt2.png'
     ];
-
     IMAGES_IDLE = [
         'img/4_enemy_boss/2_idle/Idle1.png',
         'img/4_enemy_boss/2_idle/Idle2.png',
         'img/4_enemy_boss/2_idle/Idle3.png'
     ];
-
     IMAGES_ATTACK = [
         'img/4_enemy_boss/3_attack/Attack1.png',
         'img/4_enemy_boss/3_attack/Attack2.png',
@@ -50,7 +47,6 @@ class Endboss extends MovableObject {
         'img/4_enemy_boss/3_attack/Attack6.png',
         'img/4_enemy_boss/3_attack/Attack7.png'
     ];
-
     IMAGES_ANGER = [
         'img/4_enemy_boss/6_anger/Anger1.png',
         'img/4_enemy_boss/6_anger/Anger2.png',
@@ -76,15 +72,17 @@ class Endboss extends MovableObject {
         this.animationInterval = setInterval(() => {
             this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
             this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
+
             if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
                 game_music.pause();
                 if (!soundMute) {
-                this.endBossThreat.play();
-                this.endBossMusic.play();
+                    this.endBossThreat.play();
+                    this.endBossMusic.play();
                 }
                 this.stopAllIntervals();
-                this.playAngerAnimation();                
+                this.playAngerAnimation();
             }
+
             this.playIdleAnimation();
 
             if (world.character.x >= this.endBossStartDistance) {
@@ -94,7 +92,7 @@ class Endboss extends MovableObject {
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
                 if (!soundMute) {
-                this.endBossDeadSound.play();
+                    this.endBossDeadSound.play();
                 }
                 this.speed = 0;
                 this.stopAllIntervals();
@@ -104,7 +102,7 @@ class Endboss extends MovableObject {
 
             if (this.isHurt()) {
                 if (!soundMute) {
-                this.enemyHit.play();
+                    this.enemyHit.play();
                 }
                 this.playAnimationOnce(this.IMAGES_HURT);
                 this.speed = 0;
@@ -114,7 +112,6 @@ class Endboss extends MovableObject {
             if (this.startAttack && this.energy > 0 && !this.bossNearBy && this.inFrontOfBoss && this.firstContact) {
                 if (!this.attackInterval) {
                     this.endBossAttack();
-
                 }
             }
 
@@ -128,7 +125,7 @@ class Endboss extends MovableObject {
 
     nearAttack(bossNearBy) {
         if (bossNearBy) {
-            this.endBossFrame =  [+0, +120, -130, -195];
+            this.endBossFrame = [+0, +120, -130, -195];
             this.playAnimation(this.IMAGES_ATTACK);
             this.stopMovementInterval();
         }
@@ -137,7 +134,7 @@ class Endboss extends MovableObject {
     playIdleAnimation() {
         if (this.speed === 0) {
             this.playAnimation(this.IMAGES_IDLE);
-            this.endBossFrame =   [+149, +120, -280, -195];;
+            this.endBossFrame = [+149, +120, -280, -195];
         }
     }
 

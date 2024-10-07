@@ -1,9 +1,14 @@
+/**
+ * Class representing the main character in the game.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
     y = 124;
     speed = 5;
     speedY = 0;
     gameOver = false;
 
+    // Image arrays for different character states
     IMAGES_IDLE = [
         'img/2_character_knight/1_idle/idle/idle1.png',
         'img/2_character_knight/1_idle/idle/idle2.png',
@@ -62,15 +67,19 @@ class Character extends MovableObject {
         'img/2_character_knight/2_walk/walk1.png'
     ];
 
-    world;
+    // Sounds
     walking_sound = new Audio('audio/walking.mp3');
     jumping_sound = new Audio('audio/jumping.mp3');
     dying_sound = new Audio('audio/character_dead.mp3');
 
+    // Intervals
     interactionInterval;
     animationInterval;
     movementInterval;
 
+    /**
+     * Create a character.
+     */
     constructor() {
         super().loadImage("img/2_character_knight/2_walk/walk1.png");
         this.loadImages(this.IMAGES_IDLE);
@@ -86,6 +95,9 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Set a timer to check for user interaction.
+     */
     setInteractionTimer() {
         const interactionEvents = ['click', 'keydown', 'mousemove', 'touchstart'];
 
@@ -105,10 +117,16 @@ class Character extends MovableObject {
         }, 1300);
     }
 
+    /**
+     * Play the idle animation.
+     */
     playIdleAnimation() {
         this.playAnimationOnce(this.IMAGES_IDLE);
     }
 
+    /**
+     * Animate the character based on its state.
+     */
     animate() {
         this.movementInterval = setInterval(() => {
             if (this.isDead()) {
@@ -123,7 +141,7 @@ class Character extends MovableObject {
                 }, 1000);
                 return;
             }
-    
+
             this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && this.world.enemies[0].inFrontOfBoss === true) {
                 this.moveRight();
@@ -131,29 +149,28 @@ class Character extends MovableObject {
                     this.walking_sound.play();
                 }
             }
-    
+
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 if (!this.isAboveGround() && !soundMute) {
                     this.walking_sound.play();
                 }
             }
-    
+
             if (!this.isAboveGround() && ((this.world.keyboard.SPACE) || (this.world.keyboard.UP))) {
                 this.jump();
                 if (!soundMute) {
-                this.jumping_sound.play();
+                    this.jumping_sound.play();
                 }
                 this.playAnimationOnce(this.IMAGES_JUMPING);
             }
-    
+
             this.world.camera_x = -this.x + 50;
         }, 1000 / 60);
-    
+
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
-                
             } else if (this.isHurt()) {
                 if (!soundMute) {
                     this.dying_sound.play();
@@ -169,6 +186,9 @@ class Character extends MovableObject {
         }, 50);
     }
 
+    /**
+     * Stop all intervals and timers.
+     */
     stopAllIntervalsAndTimers() {
         if (this.interactionInterval) {
             clearInterval(this.interactionInterval);
