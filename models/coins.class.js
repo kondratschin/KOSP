@@ -1,7 +1,3 @@
-/**
- * Class representing a coin in the game.
- * @extends MovableObject
- */
 class Coins extends MovableObject {
     y = 314;
     x = 200;

@@ -142,7 +142,6 @@ class Character extends MovableObject {
                 return;
             }
 
-            this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && this.world.enemies[0].inFrontOfBoss === true) {
                 this.moveRight();
                 if (!this.isAboveGround() && !soundMute) {

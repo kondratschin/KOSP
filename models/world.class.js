@@ -69,9 +69,7 @@ class World {
     }
 
     /**
-     * Run the game loop.
-     * This method sets up an interval to repeatedly check for collisions,
-     * character position relative to enemies, game over condition, and win condition.
+     * Run the game loop. This method sets up an interval to repeatedly check for collisions, character position relative to enemies, game over condition, and win condition.
      */
     run() {
         setInterval(() => {
@@ -83,8 +81,7 @@ class World {
     }
 
     /**
-     * Set the interval for checking flying objects.
-     * This method sets up an interval to repeatedly check the status of flying objects.
+     * Set the interval for checking flying objects. This method sets up an interval to repeatedly check the status of flying objects.
      */
     shootInterval() {
         setInterval(() => {
@@ -93,9 +90,7 @@ class World {
     }
 
     /**
-     * Check and handle the creation of flying objects (e.g., fireballs).
-     * If the 'D' key is pressed and the character has collected bottles,
-     * a new flying object is created and added to the flyingObjects array.
+     * Check and handle the creation of flying objects (e.g., fireballs). If the 'D' key is pressed and the character has collected bottles, a new flying object is created and added to the flyingObjects array.
      */
     checkFlyingObjects() {
         if (this.keyboard.D && this.character.collectedBottles > 0) {
@@ -139,9 +134,7 @@ class World {
     }
 
     /**
-     * Check the character's position to spawn enemies.
-     * If the character reaches a specific position (x = 800) and enemies have not been spawned yet,
-     * spawn a set of enemies (snakes and an orc) at random positions.
+     * Check the character's position to spawn enemies. If the character reaches a specific position (x = 800) and enemies have not been spawned yet, spawn a set of enemies (snakes and an orc) at random positions.
      */
     checkCharacterPositionForEnemies() {
         if (this.character.x === 800 && !this.enemiesSpawned) {
@@ -186,8 +179,7 @@ class World {
     }
 
     /**
-     * Check all types of collisions.
-     * This method calls specific collision-checking methods for enemies, coins, mana bottles, and flying objects.
+     * Check all types of collisions. This method calls specific collision-checking methods for enemies, coins, mana bottles, and flying objects.
      */
     checkCollisions() {
         this.checkEnemyCollisions();
@@ -197,8 +189,7 @@ class World {
     }
 
     /**
-     * Check collisions between the character and enemies.
-     * If a collision is detected, handle the collision based on the type of enemy and the character's state.
+     * Check collisions between the character and enemies. If a collision is detected, handle the collision based on the type of enemy and the character's state.
      */
     checkEnemyCollisions() {
         this.enemies.forEach(enemy => {
@@ -224,10 +215,8 @@ class World {
     }
 
     /**
-     * Check collisions between the character and coins.
-     * If a collision is detected, play the coin sound (if not muted),
-     * remove the coin from the coins array, increment the character's collected coins,
-     * and update the gold bar percentage.
+     * Check collisions between the character and coins.If a collision is detected, play the coin sound (if not muted),
+     * remove the coin from the coins array, increment the character's collected coins, and update the gold bar percentage.
      */
     checkCoinCollisions() {
         this.coins.forEach(coin => {
@@ -249,10 +238,8 @@ class World {
     }
 
     /**
-     * Check collisions between the character and mana bottles.
-     * If a collision is detected, play the potion sound (if not muted),
-     * remove the mana bottle from the manaBottles array, increment the character's collected bottles,
-     * and update the magic bar percentage.
+     * Check collisions between the character and mana bottles. If a collision is detected, play the potion sound (if not muted),
+     * remove the mana bottle from the manaBottles array, increment the character's collected bottles,and update the magic bar percentage.
      */
     checkManaCollisions() {
         this.manaBottles.forEach(mana => {
@@ -263,19 +250,15 @@ class World {
                 if (!soundMute) {
                     this.potionSound.play();
                 }
-                // Remove the collected mana bottle from the array
                 this.manaBottles = this.manaBottles.filter(m => m !== mana);
-                // Increment the collected bottles count
                 this.character.collectedBottles += 1;
-                // Update the magic bar percentage
                 this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
             }
         });
     }
 
     /**
-     * Check collisions between flying objects (e.g., fireballs) and enemies.
-     * If a collision is detected, apply damage to the enemy and update the boss status bar if applicable.
+     * Check collisions between flying objects (e.g., fireballs) and enemies.If a collision is detected, apply damage to the enemy and update the boss status bar if applicable.
      */
     checkFlyingObjectCollisions() {
         this.flyingObjects.forEach(flyingObject => {
@@ -285,12 +268,10 @@ class World {
                 const enemyFrame = enemy.getFrameCoordinates();
 
                 if (flyingObjectFrame && enemyFrame && !enemy.isHurt() && this.isColliding(flyingObjectFrame, enemyFrame)) {
-                    // Apply damage to the enemy
                     enemy.hit(this.fireDamage);
                     if (!(enemy instanceof Endboss)) {
                         enemy.energy = Math.min(enemy.energy, 1);
                     }
-                    // Update the boss status bar if the enemy is an Endboss
                     if (enemy instanceof Endboss) {
                         this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
                     }
@@ -331,20 +312,13 @@ class World {
 
     /**
      * Set a fixed background image.
-     * @param {string} imagePath - The path to the background image.
-     * @param {number} x - The x-coordinate of the background.
-     * @param {number} y - The y-coordinate of the background.
-     * @param {number} width - The width of the background.
-     * @param {number} height - The height of the background.
      */
     setFixedBackground(imagePath, x, y, width, height) {
         this.background = new BackgroundObject(imagePath, x, y, width, height);
     }
 
     /**
-    * Draw the game world.
-    * This method clears the canvas, draws the background, game elements, GUI elements,
-    * and the character and enemies, and then requests the next animation frame.
+    * Draw the game world. This method clears the canvas, draws the background, game elements, GUI elements, and the character and enemies, and then requests the next animation frame.
     */
     draw() {
         this.clearCanvas();
@@ -360,16 +334,14 @@ class World {
     }
 
     /**
-    * Clear the canvas.
-    * This method clears the entire canvas, preparing it for the next frame.
+    * Clear the canvas.This method clears the entire canvas, preparing it for the next frame.
     */
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**
-    * Draw the background.
-    * If a background is set, draw it on the canvas.
+    * Draw the background. If a background is set, draw it on the canvas.
     */
     drawBackground() {
         if (this.background) {
@@ -378,8 +350,7 @@ class World {
     }
 
     /**
-    * Draw game elements.
-    * This method adds various game elements (background objects, coins, mana bottles) to the map.
+    * Draw game elements.This method adds various game elements (background objects, coins, mana bottles) to the map.
     */
     drawGameElements() {
         this.addObjectsToMap(this.level.backgroundObjects);
@@ -482,8 +453,7 @@ class World {
     }
 
     /**
-     * Check if the game is over.
-     * If the character's gameOver flag is set, call the gameOver function.
+     * Check if the game is over.If the character's gameOver flag is set, call the gameOver function.
      */
     checkGameOver() {
         if (this.character.gameOver) {
@@ -492,8 +462,7 @@ class World {
     }
 
     /**
-     * Check if the game is won.
-     * If the end boss is dead, call the winGame function.
+     * Check if the game is won.If the end boss is dead, call the winGame function.
      */
     checkWinGame() {
         if (world.enemies[0].endBossDead) {
