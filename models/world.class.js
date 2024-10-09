@@ -197,13 +197,10 @@ class World {
             const enemyFrame = enemy.getFrameCoordinates();
 
             if (characterFrame && enemyFrame) {
-                // Check for jump attack
                 if (this.character.speedY > 0 && !(enemy instanceof Endboss) && this.jumpAttack(characterFrame, enemyFrame)) {
                     enemy.hit(this.knightDamage);
                     enemy.energy = Math.min(enemy.energy, 0);
                 }
-
-                // Check for regular collision
                 if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
                     let damage = enemy instanceof Endboss ? this.endBossDamage : this.enemyDamage;
                     this.character.hit(damage);
@@ -215,37 +212,30 @@ class World {
     }
 
     /**
-     * Check collisions between the character and coins.If a collision is detected, play the coin sound (if not muted),
-     * remove the coin from the coins array, increment the character's collected coins, and update the gold bar percentage.
+     * Check collisions between the character and coins.If a collision is detected, play the coin sound (if not muted), remove the coin from the coins array, increment the character's collected coins, and update the gold bar percentage.
      */
     checkCoinCollisions() {
         this.coins.forEach(coin => {
             const characterFrame = this.character.getFrameCoordinates();
             const coinFrame = coin.getFrameCoordinates();
-
             if (characterFrame && coinFrame && this.isColliding(characterFrame, coinFrame)) {
                 if (!soundMute) {
                     this.coinSound.play();
                 }
-                // Remove the collected coin from the array
                 this.coins = this.coins.filter(c => c !== coin);
-                // Increment the collected coins count
                 this.character.collectedCoins += 1;
-                // Update the gold bar percentage
                 this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
             }
         });
     }
 
     /**
-     * Check collisions between the character and mana bottles. If a collision is detected, play the potion sound (if not muted),
-     * remove the mana bottle from the manaBottles array, increment the character's collected bottles,and update the magic bar percentage.
+     * Check collisions between the character and mana bottles. If a collision is detected, play the potion sound (if not muted), remove the mana bottle from the manaBottles array, increment the character's collected bottles,and update the magic bar percentage.
      */
     checkManaCollisions() {
         this.manaBottles.forEach(mana => {
             const characterFrame = this.character.getFrameCoordinates();
             const manaFrame = mana.getFrameCoordinates();
-
             if (characterFrame && manaFrame && this.isColliding(characterFrame, manaFrame)) {
                 if (!soundMute) {
                     this.potionSound.play();
@@ -263,10 +253,8 @@ class World {
     checkFlyingObjectCollisions() {
         this.flyingObjects.forEach(flyingObject => {
             const flyingObjectFrame = flyingObject.getFrameCoordinates();
-
             this.enemies.forEach(enemy => {
                 const enemyFrame = enemy.getFrameCoordinates();
-
                 if (flyingObjectFrame && enemyFrame && !enemy.isHurt() && this.isColliding(flyingObjectFrame, enemyFrame)) {
                     enemy.hit(this.fireDamage);
                     if (!(enemy instanceof Endboss)) {
@@ -282,9 +270,6 @@ class World {
 
     /**
      * Check if two frames are colliding.
-     * @param {Object} frame1 - The first frame.
-     * @param {Object} frame2 - The second frame.
-     * @returns {boolean} - True if the frames are colliding, false otherwise.
      */
     isColliding(frame1, frame2) {
         return (
@@ -297,9 +282,6 @@ class World {
 
     /**
      * Check if a jump attack is occurring.
-     * @param {Object} characterFrame - The character's frame.
-     * @param {Object} enemyFrame - The enemy's frame.
-     * @returns {boolean} - True if a jump attack is occurring, false otherwise.
      */
     jumpAttack(characterFrame, enemyFrame) {
         return (

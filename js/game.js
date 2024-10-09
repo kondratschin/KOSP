@@ -102,13 +102,10 @@ function startGame() {
     document.getElementById('game-title-mobile').classList.add('d-none');
     document.getElementById('legal-notice').classList.add('d-none');
     soundMute = true;
-
     initLevel();
-
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
     gameStarted = true;
-
     document.getElementById('game-title-mobile').classList.remove('d-flex');
     document.getElementById('game-title-mobile').classList.add('d-none');
     checkDeviceMode();
@@ -150,7 +147,7 @@ function startGameWithEnter() {
  * Check the device mode and update the UI accordingly.
  */
 function checkDeviceMode() {
-    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     updateDeviceMode();
     window.addEventListener('resize', updateDeviceMode);
 }
@@ -181,20 +178,21 @@ function showDesktopMode(panel, mainContainer, rotateDevice) {
     mainContainer.classList.remove('d-none');
     rotateDevice.classList.remove('d-flex');
     document.body.classList.remove('bg-position');
-
 }
 
 /**
  * Show portrait mode UI
  */
 function showPortraitMode(panel, mainContainer, rotateDevice) {
-    panel.classList.remove('d-none');
-    panel.classList.add('d-flex');
+    if (gameStarted) {
+        panel.classList.remove('d-none');
+        panel.classList.add('d-flex');
+    }
     mainContainer.classList.add('d-none');
     rotateDevice.classList.add('d-flex');
     document.body.classList.add('bg-position');
     if (isMobile) {
-        document.getElementById('game-title-mobile').classList.remove('d-flex');
+
         document.getElementById('game-title-mobile').classList.add('d-none');
     }
 }
@@ -203,11 +201,16 @@ function showPortraitMode(panel, mainContainer, rotateDevice) {
  * Show landscape mode UI
  */
 function showLandscapeMode(panel, mainContainer, rotateDevice) {
-    panel.classList.add('d-flex');
-    panel.classList.remove('d-none');
+
     mainContainer.classList.remove('d-none');
     rotateDevice.classList.remove('d-flex');
     document.body.classList.remove('bg-position');
+    document.getElementById('game-title-mobile').classList.remove('d-none');
+    if (gameStarted) {
+        panel.classList.remove('d-none');
+        panel.classList.add('d-flex');
+        document.getElementById('game-title-mobile').classList.add('d-none');
+    }
 }
 
 /**
@@ -239,34 +242,53 @@ function closeFullscreen() {
  * Return to the start screen after a delay.
  */
 function backToStartScreen() {
-    setTimeout(() => {
-        document.getElementById('overlay-grey').classList.remove('d-flex');
-        document.getElementById('game-over-screen').classList.remove('d-flex');
-        document.getElementById('win-screen').classList.remove('d-flex');
-        document.getElementById('start-screen').classList.remove('d-none');
-        document.getElementById('btn-start-game').classList.remove('d-none');
-        document.getElementById('legal-notice').classList.remove('d-none');
-        if (isMobile) {
-            document.getElementById('game-title-mobile').classList.add('d-flex');
-            document.getElementById('game-title-mobile').classList.remove('d-none');
-        }
-    }, 3000);
+    document.getElementById('btn-restart').classList.add('d-none');
+    document.getElementById('game-over-screen').classList.add('d-none');
+    init();
+    document.getElementById('overlay-grey').classList.remove('d-flex');
+    document.getElementById('game-over-screen').classList.remove('d-flex');
+    document.getElementById('win-screen').classList.remove('d-flex');
+    document.getElementById('start-screen').classList.remove('d-none');
+    document.getElementById('btn-start-game').classList.remove('d-none');
+    document.getElementById('legal-notice').classList.remove('d-none');
+    if (isMobile) {
+        document.getElementById('game-title-mobile').classList.add('d-flex');
+        document.getElementById('game-title-mobile').classList.remove('d-none');
+    }
+}
+
+function restartGame() {
+    document.getElementById('btn-restart').classList.add('d-none');
+    document.getElementById('game-over-screen').classList.add('d-none');
+    init();
+    document.getElementById('overlay-grey').classList.remove('d-flex');
+    document.getElementById('game-over-screen').classList.remove('d-flex');
+    document.getElementById('win-screen').classList.remove('d-flex');
+    if (isMobile) {
+        document.getElementById('game-title-mobile').classList.add('d-flex');
+        document.getElementById('game-title-mobile').classList.remove('d-none');
+    }
+    startGame();
 }
 
 function gameOver() {
+    let panel = document.getElementById('panel');
+    gameStarted = false;
+    clearAllIntervals();
+
     if (!soundMute) {
         game_over_sound.play();
     }
     game_music.pause();
     world.enemies[0].endBossMusic.pause();
-    gameStarted = false;
-    clearAllIntervals();
     document.getElementById('overlay-grey').classList.add('d-flex');
-    document.getElementById('game-over-screen').classList.add('d-flex');
     document.getElementById('container-canvas').classList.remove('justify-content-start');
-    backToStartScreen();
-    init();
-    gameStarted = false;
+    panel.classList.remove('d-flex');
+    panel.classList.add('d-none');
+    setTimeout(() => {
+        document.getElementById('game-over-screen').classList.add('d-flex');
+        document.getElementById('btn-restart').classList.remove('d-none');
+    }, 2000);
 }
 
 /**
@@ -274,18 +296,22 @@ function gameOver() {
  * stopping the end boss music, clearing all intervals, and showing the win screen.
  */
 function winGame() {
+    let panel = document.getElementById('panel');
+    gameStarted = false;
+    clearAllIntervals();
     if (!soundMute && !soundButtonMute) {
         game_win_sound.play();
     }
     game_music.pause();
     world.enemies[0].endBossMusic.pause();
-    clearAllIntervals();
+    panel.classList.remove('d-flex');
+    panel.classList.add('d-none');
     document.getElementById('overlay-grey').classList.add('d-flex');
-    document.getElementById('win-screen').classList.add('d-flex');
     document.getElementById('container-canvas').classList.remove('justify-content-start');
-    backToStartScreen();
-    init();
-    gameStarted = false;
+    setTimeout(() => {
+        document.getElementById('win-screen').classList.add('d-flex');
+        document.getElementById('btn-restart').classList.remove('d-none');
+    }, 2000);
 }
 
 /**
