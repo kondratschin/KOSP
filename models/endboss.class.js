@@ -55,6 +55,9 @@ class Endboss extends MovableObject {
         'img/4_enemy_boss/6_anger/Anger5.png'
     ];
 
+    /**
+     * Create an end boss.
+     */
     constructor() {
         super().loadImage("img/4_enemy_boss/2_idle/Idle1.png");
         this.loadImages(this.IMAGES_WALKING);
@@ -68,61 +71,107 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Animate the end boss.
+     */
     animate() {
         this.animationInterval = setInterval(() => {
-            this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
-            this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
-
-            if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
-                game_music.pause();
-                if (!soundMute) {
-                    this.endBossThreat.play();
-                    this.endBossMusic.play();
-                }
-                this.stopAllIntervals();
-                this.playAngerAnimation();
-            }
-
+            this.updateBossState();
+            this.handleFirstContact();
             this.playIdleAnimation();
-
-            if (world.character.x >= this.endBossStartDistance) {
-                this.startAttack = true;
-            }
-
-            if (this.isDead()) {
-                this.playAnimationOnce(this.IMAGES_DEAD);
-                if (!soundMute) {
-                    this.endBossDeadSound.play();
-                }
-                this.speed = 0;
-                this.stopAllIntervals();
-                this.endBossDead = true;
-                return;
-            }
-
-            if (this.isHurt()) {
-                if (!soundMute) {
-                    this.enemyHit.play();
-                }
-                this.playAnimationOnce(this.IMAGES_HURT);
-                this.speed = 0;
-                return;
-            }
-
-            if (this.startAttack && this.energy > 0 && !this.bossNearBy && this.inFrontOfBoss && this.firstContact) {
-                if (!this.attackInterval) {
-                    this.endBossAttack();
-                }
-            }
-
-            if (this.bossNearBy || !this.inFrontOfBoss) {
-                this.stopEndBossAttack();
-            }
-
+            this.checkStartAttack();
+            this.handleDeath();
+            this.handleHurt();
+            this.handleAttack();
+            this.stopAttackIfNeeded();
             this.nearAttack(this.bossNearBy);
         }, 200);
     }
 
+    /**
+     * Update the boss state.
+     */
+    updateBossState() {
+        this.bossNearBy = world.character.x >= world.enemies[0].x - 100 && world.character.x <= world.enemies[0].x + 100 && this.speed === 0;
+        this.inFrontOfBoss = world.character.x <= world.enemies[0].x - 100;
+    }
+
+    /**
+     * Handle the first contact with the boss.
+     */
+    handleFirstContact() {
+        if (world.character.x >= this.endBossStartDistance && !this.firstContact) {
+            game_music.pause();
+            if (!soundMute) {
+                this.endBossThreat.play();
+                this.endBossMusic.play();
+            }
+            this.stopAllIntervals();
+            this.playAngerAnimation();
+        }
+    }
+
+    /**
+     * Check if the attack should start.
+     */
+    checkStartAttack() {
+        if (world.character.x >= this.endBossStartDistance) {
+            this.startAttack = true;
+        }
+    }
+
+    /**
+     * Handle the boss's death.
+     */
+    handleDeath() {
+        if (this.isDead()) {
+            this.playAnimationOnce(this.IMAGES_DEAD);
+            if (!soundMute) {
+                this.endBossDeadSound.play();
+            }
+            this.speed = 0;
+            this.stopAllIntervals();
+            this.endBossDead = true;
+        }
+    }
+
+    /**
+     * Handle the boss being hurt.
+     */
+    handleHurt() {
+        if (this.isHurt()) {
+            if (!soundMute) {
+                this.enemyHit.play();
+            }
+            this.playAnimationOnce(this.IMAGES_HURT);
+            this.speed = 0;
+        }
+    }
+
+    /**
+     * Handle the boss's attack.
+     */
+    handleAttack() {
+        if (this.startAttack && this.energy > 0 && !this.bossNearBy && this.inFrontOfBoss && this.firstContact) {
+            if (!this.attackInterval) {
+                this.endBossAttack();
+            }
+        }
+    }
+
+    /**
+     * Stop the boss's attack if needed.
+     */
+    stopAttackIfNeeded() {
+        if (this.bossNearBy || !this.inFrontOfBoss) {
+            this.stopEndBossAttack();
+        }
+    }
+
+    /**
+     * Handle near attack.
+     * @param {boolean} bossNearBy - Indicates if the boss is nearby.
+     */
     nearAttack(bossNearBy) {
         if (bossNearBy) {
             this.endBossFrame = [+0, +120, -130, -195];
@@ -131,6 +180,9 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Play the idle animation.
+     */
     playIdleAnimation() {
         if (this.speed === 0) {
             this.playAnimation(this.IMAGES_IDLE);
@@ -138,6 +190,9 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Play the anger animation.
+     */
     playAngerAnimation() {
         if (this.speed === 0) {
             this.playAnimationOnce(this.IMAGES_ANGER);
@@ -148,6 +203,9 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Handle the boss's attack.
+     */
     endBossAttack() {
         if (this.isDead()) {
             return;
@@ -171,12 +229,18 @@ class Endboss extends MovableObject {
         }, 1000);
     }
 
+    /**
+     * Stop the boss's attack.
+     */
     stopEndBossAttack() {
         this.stopMovementInterval();
         this.stopAttackInterval();
         this.speed = 0;
     }
 
+    /**
+     * Stop the movement interval.
+     */
     stopMovementInterval() {
         if (this.movementInterval) {
             clearInterval(this.movementInterval);
@@ -184,6 +248,9 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Stop the attack interval.
+     */
     stopAttackInterval() {
         if (this.attackInterval) {
             clearTimeout(this.attackInterval);
@@ -191,12 +258,18 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Stop all intervals.
+     */
     stopAllIntervals() {
         this.stopMovementInterval();
         this.stopAttackInterval();
         this.stopAnimationInterval();
     }
 
+    /**
+     * Stop the animation interval.
+     */
     stopAnimationInterval() {
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
