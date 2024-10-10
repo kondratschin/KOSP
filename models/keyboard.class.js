@@ -1,5 +1,4 @@
 class Keyboard {
-    // Initialize key states
     LEFT = false;
     RIGHT = false;
     UP = false;

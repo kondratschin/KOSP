@@ -68,10 +68,8 @@ class DrawableObject {
 
     /**
      * Placeholder method to get frame coordinates.
-     * Should be implemented in subclasses.
      */
     getFrameCoordinates() {
-        // This method should be implemented in subclasses
         return null;
     }
 }

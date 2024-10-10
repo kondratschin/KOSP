@@ -40,18 +40,25 @@ class World {
     knightDamage = 10;
     fireDamage = 5;
 
+    /**
+     * Creates an instance of World.
+     * @param {HTMLCanvasElement} canvas - The canvas element.
+     * @param {Object} keyboard - The keyboard input handler.
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.drawer = new Drawer(this);
+        this.collisionChecker = new CollisionChecker(this);
         this.setFixedBackground('img/5_background/layers/sky.png', 0, 0, 720, 405);
-        this.draw();
         this.setWorld();
         this.shootInterval();
         this.run();
         this.createCoins();
         this.createMana();
         this.initialCoinsAmount = this.coins.length;
+        this.draw();
     }
 
     /**
@@ -66,11 +73,12 @@ class World {
      */
     run() {
         setInterval(() => {
-            this.checkCollisions();
+            this.collisionChecker.checkCollisions();
             this.checkCharacterPositionForEnemies();
             this.checkGameOver();
+            this.draw();
             this.checkWinGame();
-        }, 1000 / 60); // 60 times per second
+        }, 1000 / 60);
     }
 
     /**
@@ -79,7 +87,7 @@ class World {
     shootInterval() {
         setInterval(() => {
             this.checkFlyingObjects();
-        }, 1000 / 10); // 10 times per second
+        }, 1000 / 10);
     }
 
     /**
@@ -152,7 +160,6 @@ class World {
             { x: 1550, y: 400 }
         ];
 
-        // Create and add mana bottles to the manaBottles array based on predefined positions
         manaPositions.forEach(position => {
             let mana = new Mana(position.x, position.y);
             this.manaBottles.push(mana);
@@ -160,237 +167,51 @@ class World {
     }
 
     /**
-     * Check all types of collisions. This method calls specific collision-checking methods for enemies, coins, mana bottles, and flying objects.
-     */
-    checkCollisions() {
-        this.checkEnemyCollisions();
-        this.checkCoinCollisions();
-        this.checkManaCollisions();
-        this.checkFlyingObjectCollisions();
-    }
-
-    checkEnemyCollisions() {
-        this.enemies.forEach(enemy => {
-            const characterFrame = this.character.getFrameCoordinates();
-            const enemyFrame = enemy.getFrameCoordinates();
-
-            if (characterFrame && enemyFrame) {
-                if (this.character.speedY > 0 && !(enemy instanceof Endboss) && this.jumpAttack(characterFrame, enemyFrame)) {
-                    enemy.hit(this.knightDamage);
-                    enemy.energy = Math.min(enemy.energy, 0);
-                }
-                if (this.isColliding(characterFrame, enemyFrame) && !this.character.isHurt() && !enemy.isDead() && !enemy.isHurt()) {
-                    let damage = enemy instanceof Endboss ? this.endBossDamage : this.enemyDamage;
-                    this.character.hit(damage);
-                    let energy = Math.min(this.character.energy, 100);
-                    this.statusBarSetPercentage.setPercentage(energy);
-                }
-            }
-        });
-    }
-
-    checkCoinCollisions() {
-        this.coins.forEach(coin => {
-            const characterFrame = this.character.getFrameCoordinates();
-            const coinFrame = coin.getFrameCoordinates();
-            if (characterFrame && coinFrame && this.isColliding(characterFrame, coinFrame)) {
-                if (!soundMute) {
-                    this.coinSound.play();
-                }
-                this.coins = this.coins.filter(c => c !== coin);
-                this.character.collectedCoins += 1;
-                this.goldBarSetPercentage.setPercentage(this.character.collectedCoins / this.initialCoinsAmount);
-            }
-        });
-    }
-
-    checkManaCollisions() {
-        this.manaBottles.forEach(mana => {
-            const characterFrame = this.character.getFrameCoordinates();
-            const manaFrame = mana.getFrameCoordinates();
-            if (characterFrame && manaFrame && this.isColliding(characterFrame, manaFrame)) {
-                if (!soundMute) {
-                    this.potionSound.play();
-                }
-                this.manaBottles = this.manaBottles.filter(m => m !== mana);
-                this.character.collectedBottles += 1;
-                this.magicBarSetPercentage.setPercentage(this.character.collectedBottles / this.magicBarFullAmount);
-            }
-        });
-    }
-
-    checkFlyingObjectCollisions() {
-        this.flyingObjects.forEach(flyingObject => {
-            const flyingObjectFrame = flyingObject.getFrameCoordinates();
-            this.enemies.forEach(enemy => {
-                const enemyFrame = enemy.getFrameCoordinates();
-                if (flyingObjectFrame && enemyFrame && !enemy.isHurt() && this.isColliding(flyingObjectFrame, enemyFrame)) {
-                    enemy.hit(this.fireDamage);
-                    if (!(enemy instanceof Endboss)) {
-                        enemy.energy = Math.min(enemy.energy, 1);
-                    }
-                    if (enemy instanceof Endboss) {
-                        this.statusBarBossSetPercentage.setPercentageBoss(enemy.energy);
-                    }
-                }
-            });
-        });
-    }
-
-    isColliding(frame1, frame2) {
-        return (
-            frame1.x < frame2.x + frame2.width &&
-            frame1.x + frame1.width > frame2.x &&
-            frame1.y < frame2.y + frame2.height &&
-            frame1.y + frame1.height > frame2.y
-        );
-    }
-
-    /**
-     * Check if a jump attack is occurring.
-     */
-    jumpAttack(characterFrame, enemyFrame) {
-        return (
-            characterFrame.y + characterFrame.height > enemyFrame.y &&
-            characterFrame.y + characterFrame.height < enemyFrame.y + enemyFrame.height &&
-            characterFrame.x < enemyFrame.x + enemyFrame.width &&
-            characterFrame.x + characterFrame.width > enemyFrame.x
-        );
-    }
-
-    /**
      * Set a fixed background image.
+     * @param {string} imagePath - The path to the background image.
+     * @param {number} x - The x-coordinate of the background image.
+     * @param {number} y - The y-coordinate of the background image.
+     * @param {number} width - The width of the background image.
+     * @param {number} height - The height of the background image.
      */
     setFixedBackground(imagePath, x, y, width, height) {
         this.background = new BackgroundObject(imagePath, x, y, width, height);
     }
 
     /**
-    * Draw the game world. This method clears the canvas, draws the background, game elements, GUI elements, and the character and enemies, and then requests the next animation frame.
-    */
+     * Draw the game world. This method clears the canvas, draws the background, game elements, GUI elements, and the character and enemies.
+     */
     draw() {
         this.clearCanvas();
-        this.drawBackground();
+        this.drawer.drawBackground();
         this.ctx.translate(this.camera_x, 0);
-        this.drawGameElements();
+        this.drawer.drawGameElements();
         this.ctx.translate(-this.camera_x, 0);
-        this.drawGUIElements();
+        this.drawer.drawGUIElements();
         this.ctx.translate(this.camera_x, 0);
-        this.drawCharacterAndEnemies();
+        this.drawer.drawCharacterAndEnemies();
         this.ctx.translate(-this.camera_x, 0);
-        requestAnimationFrame(() => this.draw());
     }
 
+    /**
+     * Clear the canvas.
+     */
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    drawBackground() {
-        if (this.background) {
-            this.background.draw(this.ctx);
-        }
-    }
-
-    drawGameElements() {
-        this.addObjectsToMap(this.level.backgroundObjects);
-        this.addObjectsToMap(this.coins);
-        this.addObjectsToMap(this.manaBottles);
-    }
-
-    drawGUIElements() {
-        this.addToMap(this.guiFrame);
-        this.addToMap(this.characterGUI);
-        this.addToMap(this.goldGUI);
-        this.addToMap(this.magicGUI);
-        if (this.character.energy > 0) {
-            this.addToMap(this.statusBarLeftCorner);
-        }
-        if (this.character.energy === 100) {
-            this.addToMap(this.statusBarRightCorner);
-        }
-        this.addToMap(this.statusBarSetPercentage);
-        this.drawBossGUI();
-        this.drawMagicBar();
-        this.drawGoldBar();
-    }
-
-    drawBossGUI() {
-        if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.firstContact)) {
-            this.addToMap(this.BossGUI);
-            this.addToMap(this.bossImage);
-            this.addToMap(this.statusBarBossSetPercentage);
-            if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy === world.statusBarBossSetPercentage.energyBoss)) {
-                this.addToMap(this.statusBarBossRightCorner);
-            }
-            if (this.level.enemies.some(enemy => enemy instanceof Endboss && enemy.energy > 0)) {
-                this.addToMap(this.statusBarBossLeftCorner);
-            }
-        }
-    }
-
-    drawMagicBar() {
-        if (this.character.collectedBottles > 0) {
-            this.addToMap(this.magicBarLeftCorner);
-        }
-        if (this.character.collectedBottles >= this.magicBarFullAmount) {
-            this.addToMap(this.magicBarRightCorner);
-        }
-        this.addToMap(this.magicBarSetPercentage);
-    }
-
-    drawGoldBar() {
-        if (this.character.collectedCoins > 0) {
-            this.addToMap(this.goldBarLeftCorner);
-        }
-        this.addToMap(this.goldBarSetPercentage);
-        if (this.character.collectedCoins === this.initialCoinsAmount) {
-            this.addToMap(this.goldBarRightCorner);
-        }
-    }
-
-    drawCharacterAndEnemies() {
-        this.addObjectsToMap(this.level.clouds);
-        if (!this.character.removeCorpse) {
-            this.addToMap(this.character);
-        }
-        this.addObjectsToMap(this.level.enemies.filter(enemy => !enemy.removeCorpse));
-        this.addObjectsToMap(this.flyingObjects);
-    }
-
     /**
-     * Add multiple objects to the map.
+     * Check if the game is over.
      */
-    addObjectsToMap(objects) {
-        objects.forEach(o => this.addToMap(o));
-    }
-
-    addToMap(mo) {
-        if (mo.otherDirection) {
-            this.flipImage(mo);
-            mo.drawFrame(this.ctx);
-        } else {
-            mo.draw(this.ctx);
-            mo.drawFrame(this.ctx);
-        }
-    }
-
-    /**
-     * Flip an image horizontally.
-     */
-    flipImage(mo) {
-        this.ctx.save();
-        this.ctx.translate(mo.x + mo.width - 35, mo.y);
-        this.ctx.scale(-1, 1);
-        this.ctx.drawImage(mo.img, 0, 0, mo.width, mo.height);
-        this.ctx.restore();
-    }
-
     checkGameOver() {
         if (this.character.gameOver) {
             gameOver();
         }
     }
 
+    /**
+     * Check if the game is won.
+     */
     checkWinGame() {
         if (world.enemies[0].endBossDead) {
             winGame();
