@@ -1,5 +1,4 @@
 class StatusBar extends DrawableObject {
-    // Array of image paths for different status bar components
     IMAGES = [
         'img/7_statusbars/2_interface/stamina_corner1.png',
         'img/7_statusbars/2_interface/stamina_full_bar.png',
@@ -11,16 +10,26 @@ class StatusBar extends DrawableObject {
         'img/7_statusbars/2_interface/hp_corner2.png',
     ];
 
-    // Default percentage for stamina
     percentage = 100;
-    // Default energy level for boss
     energyBoss = 20;
 
+    /**
+     * Create a status bar.
+     * @param {string} initMethod - The initialization method.
+     * @param {number|null} energy - The energy level for the boss.
+     */
     constructor(initMethod = 'leftCorner', energy = null) {
         super();
         this.loadImages(this.IMAGES);
+        this.initialize(initMethod, energy);
+    }
 
-        // Initialize based on the provided method
+    /**
+     * Initialize the status bar based on the provided method.
+     * @param {string} initMethod - The initialization method.
+     * @param {number|null} energy - The energy level for the boss.
+     */
+    initialize(initMethod, energy) {
         switch (initMethod) {
             case 'leftCorner':
                 this.leftCorner();
@@ -45,45 +54,65 @@ class StatusBar extends DrawableObject {
         }
     }
 
-    // Set the status bar to the left corner for stamina
+    /**
+     * Set the status bar to the left corner for stamina.
+     */
     leftCorner() {
         this.img = this.imageCache[this.IMAGES[0]];
         this.setPosition(102, 31, 4, 14);
     }
 
-    // Set the status bar to the right corner for stamina
+    /**
+     * Set the status bar to the right corner for stamina.
+     */
     rightCorner() {
         this.img = this.imageCache[this.IMAGES[2]];
         this.setPosition(219, 31, 4, 14);
     }
 
-    // Set the percentage of the stamina bar
+    /**
+     * Set the percentage of the stamina bar.
+     * @param {number} percentage - The percentage of the stamina bar.
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
         this.img = this.imageCache[this.IMAGES[1]];
         this.setPosition(106, 31, 113 * (percentage / 100), 14);
     }
 
-    // Set the status bar to the left corner for boss energy
+    /**
+     * Set the status bar to the left corner for boss energy.
+     */
     leftCornerBoss() {
         this.img = this.imageCache[this.IMAGES[7]];
         this.setPosition(617, 31, 4, 14);
     }
 
-    // Set the status bar to the right corner for boss energy
+    /**
+     * Set the status bar to the right corner for boss energy.
+     */
     rightCornerBoss() {
         this.img = this.imageCache[this.IMAGES[5]];
         this.setPosition(500, 31, 4, 14);
     }
 
-    // Set the percentage of the boss energy bar
+    /**
+     * Set the percentage of the boss energy bar.
+     * @param {number} newEnergyLevel - The new energy level for the boss.
+     */
     setPercentageBoss(newEnergyLevel) {
         this.img = this.imageCache[this.IMAGES[6]];
         const width = 113 * (newEnergyLevel / this.energyBoss);
         this.setPosition(617 - width, 31, width, 14);
     }
 
-    // Helper method to set position and size
+    /**
+     * Helper method to set position and size.
+     * @param {number} x - The x-coordinate of the status bar.
+     * @param {number} y - The y-coordinate of the status bar.
+     * @param {number} width - The width of the status bar.
+     * @param {number} height - The height of the status bar.
+     */
     setPosition(x, y, width, height) {
         this.x = x;
         this.y = y;
