@@ -10,6 +10,9 @@ let game_music = new Audio('audio/background.mp3');
 let game_over_sound = new Audio('audio/gameover.mp3');
 let game_win_sound = new Audio('audio/gamewon.mp3');
 
+/**
+ * Initialize the game.
+ */
 function init() {
     checkDeviceMode();
     soundMute = true;
@@ -18,9 +21,14 @@ function init() {
 }
 
 /**
- * Event listener for keydown events
+ * Event listener for keydown events.
  */
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => handleKeyDown(e));
+
+/**
+ * Handle keydown events.
+ */
+function handleKeyDown(e) {
     switch (e.keyCode) {
         case 39:
             keyboard.RIGHT = true;
@@ -44,12 +52,17 @@ window.addEventListener('keydown', (e) => {
             keyboard.ENTER = true;
             break;
     }
-});
+}
 
 /**
- * Event listener for keyup events
+ * Event listener for keyup events.
  */
-window.addEventListener('keyup', (e) => {
+window.addEventListener('keyup', (e) => handleKeyUp(e));
+
+/**
+ * Handle keyup events.
+ */
+function handleKeyUp(e) {
     switch (e.keyCode) {
         case 39:
             keyboard.RIGHT = false;
@@ -73,10 +86,10 @@ window.addEventListener('keyup', (e) => {
             keyboard.ENTER = false;
             break;
     }
-});
+}
 
 /**
- * Enter fullscreen mode
+ * Enter fullscreen mode.
  */
 function enterFullscreen() {
     let element = document.getElementById('container-canvas');
@@ -93,21 +106,18 @@ function enterFullscreen() {
 }
 
 /**
- * Starts the game by closing the start screen, initializing the level,
- * setting up the canvas and world, and checking the device mode.
+ * Start the game.
  */
 function startGame() {
     closeStartScreen();
-    document.getElementById('game-title-mobile').classList.remove('d-flex');
-    document.getElementById('game-title-mobile').classList.add('d-none');
+    hideGameTitleMobile();
     document.getElementById('legal-notice').classList.add('d-none');
     soundMute = true;
     initLevel();
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
     gameStarted = true;
-    document.getElementById('game-title-mobile').classList.remove('d-flex');
-    document.getElementById('game-title-mobile').classList.add('d-none');
+    hideGameTitleMobile();
     checkDeviceMode();
 
     if (!soundButtonMute) {
@@ -118,7 +128,15 @@ function startGame() {
 }
 
 /**
- * Closes the start screen after a delay and sets up the game environment.
+ * Hide the game title for mobile.
+ */
+function hideGameTitleMobile() {
+    document.getElementById('game-title-mobile').classList.remove('d-flex');
+    document.getElementById('game-title-mobile').classList.add('d-none');
+}
+
+/**
+ * Close the start screen.
  */
 function closeStartScreen() {
     setTimeout(() => {
@@ -133,7 +151,7 @@ function closeStartScreen() {
 }
 
 /**
- * Starts the game when the Enter key is pressed.
+ * Start the game when the Enter key is pressed.
  */
 function startGameWithEnter() {
     setInterval(() => {
@@ -170,7 +188,7 @@ function updateDeviceMode() {
 }
 
 /**
- * Show desktop mode UI
+ * Show desktop mode UI.
  */
 function showDesktopMode(panel, mainContainer, rotateDevice) {
     panel.classList.remove('d-flex');
@@ -181,7 +199,7 @@ function showDesktopMode(panel, mainContainer, rotateDevice) {
 }
 
 /**
- * Show portrait mode UI
+ * Show portrait mode UI.
  */
 function showPortraitMode(panel, mainContainer, rotateDevice) {
     if (gameStarted) {
@@ -192,16 +210,14 @@ function showPortraitMode(panel, mainContainer, rotateDevice) {
     rotateDevice.classList.add('d-flex');
     document.body.classList.add('bg-position');
     if (isMobile) {
-
         document.getElementById('game-title-mobile').classList.add('d-none');
     }
 }
 
 /**
- * Show landscape mode UI
+ * Show landscape mode UI.
  */
 function showLandscapeMode(panel, mainContainer, rotateDevice) {
-
     mainContainer.classList.remove('d-none');
     rotateDevice.classList.remove('d-flex');
     document.body.classList.remove('bg-position');
@@ -225,7 +241,7 @@ function checkGameMusic() {
 }
 
 /**
- * Exit fullscreen mode
+ * Exit fullscreen mode.
  */
 function closeFullscreen() {
     if (document.exitFullscreen) {
@@ -257,6 +273,9 @@ function backToStartScreen() {
     }
 }
 
+/**
+ * Restart the game.
+ */
 function restartGame() {
     document.getElementById('btn-restart').classList.add('d-none');
     document.getElementById('game-over-screen').classList.add('d-none');
@@ -271,6 +290,9 @@ function restartGame() {
     startGame();
 }
 
+/**
+ * Handle game over scenario.
+ */
 function gameOver() {
     let panel = document.getElementById('panel');
     gameStarted = false;
@@ -292,8 +314,7 @@ function gameOver() {
 }
 
 /**
- * Handles the win game scenario by playing the win sound, pausing the game music,
- * stopping the end boss music, clearing all intervals, and showing the win screen.
+ * Handle win game scenario.
  */
 function winGame() {
     let panel = document.getElementById('panel');
@@ -315,7 +336,7 @@ function winGame() {
 }
 
 /**
- * Turn sound on
+ * Turn sound on.
  */
 function soundOn() {
     document.getElementById('btn-sound-on').classList.remove('d-none');
@@ -326,7 +347,7 @@ function soundOn() {
 }
 
 /**
- * Turn sound off
+ * Turn sound off.
  */
 function soundOff() {
     document.getElementById('btn-sound-on').classList.add('d-none');
@@ -337,7 +358,7 @@ function soundOff() {
 }
 
 /**
- * Clear all intervals
+ * Clear all intervals.
  */
 function clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
