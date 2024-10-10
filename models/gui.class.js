@@ -1,5 +1,4 @@
 class GUI extends DrawableObject {
-    // Array of image paths used in the GUI
     IMAGES = [
         'img/7_statusbars/1_icons/character_info_full.png',
         'img/2_character_knight/1_idle/long_idle/idle1.png',
@@ -9,13 +8,20 @@ class GUI extends DrawableObject {
         'img/4_enemy_boss/2_idle/Idle1.png'
     ];
 
+    /**
+     * Create a GUI.
+     * @param {string} initMethod - The initialization method.
+     */
     constructor(initMethod = 'GUI') {
         super();
         this.loadImages(this.IMAGES);
         this.initializeGUI(initMethod);
     }
 
-    // Initialize the GUI based on the provided method
+    /**
+     * Initialize the GUI based on the provided method.
+     * @param {string} initMethod - The initialization method.
+     */
     initializeGUI(initMethod) {
         switch (initMethod) {
             case 'GUI':
@@ -41,38 +47,57 @@ class GUI extends DrawableObject {
         }
     }
 
-    // Set up the main GUI frame
+    /**
+     * Set up the main GUI frame.
+     */
     guiFrame() {
         this.setImage(this.IMAGES[0], 24, 24, 202, 79);
     }
 
-    // Set up the boss GUI frame
+    /**
+     * Set up the boss GUI frame.
+     */
     guiFrameBoss() {
         this.setImage(this.IMAGES[4], 496, 24, 202, 79);
     }
 
-    // Set up the boss image
+    /**
+     * Set up the boss image.
+     */
     bossImage() {
         this.setImage(this.IMAGES[5], 612, -12, 130, 130);
         this.otherDirection = true;
     }
 
-    // Set up the knight GUI
+    /**
+     * Set up the knight GUI.
+     */
     knightGUI() {
         this.setImage(this.IMAGES[1], -22, -51, 200, 200);
     }
 
-    // Set up the gold GUI
+    /**
+     * Set up the gold GUI.
+     */
     goldGUI() {
         this.setImage(this.IMAGES[2], 202, 66, 14, 14);
     }
 
-    // Set up the magic GUI
+    /**
+     * Set up the magic GUI.
+     */
     magicGUI() {
         this.setImage(this.IMAGES[3], 203, 50, 14, 14);
     }
 
-    // Helper method to set image properties
+    /**
+     * Helper method to set image properties.
+     * @param {string} imagePath - The path to the image.
+     * @param {number} x - The x-coordinate of the image.
+     * @param {number} y - The y-coordinate of the image.
+     * @param {number} width - The width of the image.
+     * @param {number} height - The height of the image.
+     */
     setImage(imagePath, x, y, width, height) {
         this.img = this.imageCache[imagePath];
         this.x = x;
