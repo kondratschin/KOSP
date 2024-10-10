@@ -1,8 +1,18 @@
+/**
+ * Class responsible for checking collisions in the game world.
+ */
 class CollisionChecker {
+    /**
+     * Creates an instance of CollisionChecker.
+     * @param {Object} world - The game world instance.
+     */
     constructor(world) {
         this.world = world;
     }
 
+    /**
+     * Checks all types of collisions in the game world.
+     */
     checkCollisions() {
         this.checkEnemyCollisions();
         this.checkCoinCollisions();
@@ -10,6 +20,9 @@ class CollisionChecker {
         this.checkFlyingObjectCollisions();
     }
 
+    /**
+     * Checks for collisions between the character and enemies.
+     */
     checkEnemyCollisions() {
         this.world.enemies.forEach(enemy => {
             const characterFrame = this.world.character.getFrameCoordinates();
@@ -30,6 +43,9 @@ class CollisionChecker {
         });
     }
 
+    /**
+     * Checks for collisions between the character and coins.
+     */
     checkCoinCollisions() {
         this.world.coins.forEach(coin => {
             const characterFrame = this.world.character.getFrameCoordinates();
@@ -45,6 +61,9 @@ class CollisionChecker {
         });
     }
 
+    /**
+     * Checks for collisions between the character and mana bottles.
+     */
     checkManaCollisions() {
         this.world.manaBottles.forEach(mana => {
             const characterFrame = this.world.character.getFrameCoordinates();
@@ -60,6 +79,9 @@ class CollisionChecker {
         });
     }
 
+    /**
+     * Checks for collisions between flying objects and enemies.
+     */
     checkFlyingObjectCollisions() {
         this.world.flyingObjects.forEach(flyingObject => {
             const flyingObjectFrame = flyingObject.getFrameCoordinates();
@@ -78,6 +100,12 @@ class CollisionChecker {
         });
     }
 
+    /**
+     * Checks if two frames are colliding.
+     * @param {Object} frame1 - The first frame.
+     * @param {Object} frame2 - The second frame.
+     * @returns {boolean} True if the frames are colliding, false otherwise.
+     */
     isColliding(frame1, frame2) {
         return (
             frame1.x < frame2.x + frame2.width &&
@@ -87,6 +115,12 @@ class CollisionChecker {
         );
     }
 
+    /**
+     * Checks if a jump attack is occurring between the character and an enemy.
+     * @param {Object} characterFrame - The character's frame.
+     * @param {Object} enemyFrame - The enemy's frame.
+     * @returns {boolean} True if a jump attack is occurring, false otherwise.
+     */
     jumpAttack(characterFrame, enemyFrame) {
         return (
             characterFrame.y + characterFrame.height > enemyFrame.y &&
